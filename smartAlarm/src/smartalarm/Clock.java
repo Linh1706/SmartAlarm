@@ -50,7 +50,7 @@ public class Clock extends javax.swing.JFrame {
                         night_day = "PM";
                     }
                     
-                    ClockLabel.setText(hour + ":" + minute + " " + night_day);
+                    ClockLabel.setText(String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day);
                     
                     switch(day){
                         case 1:
