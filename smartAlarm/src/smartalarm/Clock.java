@@ -41,6 +41,9 @@ public class Clock extends javax.swing.JFrame {
                     int minute = cal.get(Calendar.MINUTE);
                     int AM_PM = cal.get(Calendar.AM_PM);
                     int day = cal.get(Calendar.DAY_OF_WEEK);
+                    if(hour == 0){
+                        hour = 12;
+                    }
                     String night_day;
                     
                     if(AM_PM == 0){
