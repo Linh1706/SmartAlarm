@@ -1,4 +1,4 @@
-package mp3player;
+package Mp3Player;
 
 //All code is added to create the widget. Follow the "Create a Widget" tutorial if you want to know how I did it.
 
@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 
 public class MP3PlayerGUI extends javax.swing.JDialog 
 {
-    Mp3Class MC = new Mp3Class();
+    MP3Player MC = new MP3Player();
     int xMouse;
     int yMouse;
     
@@ -32,7 +32,7 @@ public class MP3PlayerGUI extends javax.swing.JDialog
         Pause = new javax.swing.JLabel();
         Stop = new javax.swing.JLabel();
         Loop = new javax.swing.JLabel();
-        Display = new javax.swing.JLabel();
+        DisplayName = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -41,21 +41,9 @@ public class MP3PlayerGUI extends javax.swing.JDialog
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Play.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Play.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                PlayAncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
         Play.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 PlayMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                PlayMouseClicked(evt);
             }
         });
         getContentPane().add(Play, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 40, 90, 83));
@@ -82,11 +70,12 @@ public class MP3PlayerGUI extends javax.swing.JDialog
         Loop.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         getContentPane().add(Loop, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 40, 40));
 
-        Display.setFont(new java.awt.Font("Digital-7", 0, 13)); // NOI18N
-        Display.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        getContentPane().add(Display, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 330, 20));
+        DisplayName.setFont(new java.awt.Font("Digital-7", 1, 14)); // NOI18N
+        DisplayName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        DisplayName.setText("SmartAlarm");
+        getContentPane().add(DisplayName, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 330, 20));
 
-        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mp3player/Background.png"))); // NOI18N
+        Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Mp3Player/Background.png"))); // NOI18N
         Background.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 BackgroundMouseDragged(evt);
@@ -116,7 +105,10 @@ public class MP3PlayerGUI extends javax.swing.JDialog
     }//GEN-LAST:event_BackgroundMousePressed
 
     private void PlayMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PlayMouseReleased
-      
+        // TODO add your handling code here:
+        MC.Stop2();
+        MC.PlayResume("nothingatall.mp3");
+        
     }//GEN-LAST:event_PlayMouseReleased
 
     private void StopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StopMouseReleased
@@ -128,19 +120,6 @@ public class MP3PlayerGUI extends javax.swing.JDialog
         // TODO add your handling code here:
         MC.Pause();
     }//GEN-LAST:event_PauseMouseReleased
-
-    private void PlayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PlayMouseClicked
-        // TODO add your handling code here:
-        MC.Stop2();
-        MC.Play("nothingatall.mp3");
-        Display.setText("When you say no thing at all");
-        
-        
-    }//GEN-LAST:event_PlayMouseClicked
-
-    private void PlayAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_PlayAncestorAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PlayAncestorAdded
   
 
     public static void main(String args[]) 
@@ -189,7 +168,7 @@ public class MP3PlayerGUI extends javax.swing.JDialog
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Background;
-    public static javax.swing.JLabel Display;
+    public static javax.swing.JLabel DisplayName;
     private javax.swing.JLabel Loop;
     private javax.swing.JLabel Pause;
     private javax.swing.JLabel Play;
