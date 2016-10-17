@@ -41,6 +41,9 @@ public class Clock extends javax.swing.JFrame {
                     int minute = cal.get(Calendar.MINUTE);
                     int AM_PM = cal.get(Calendar.AM_PM);
                     int day = cal.get(Calendar.DAY_OF_WEEK);
+                    if(hour == 0){
+                        hour = 12;
+                    }
                     String night_day;
                     
                     if(AM_PM == 0){
@@ -50,7 +53,7 @@ public class Clock extends javax.swing.JFrame {
                         night_day = "PM";
                     }
                     
-                    ClockLabel.setText(hour + ":" + minute + " " + night_day);
+                    ClockLabel.setText(String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day);
                     
                     switch(day){
                         case 1:
