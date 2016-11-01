@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
@@ -14,7 +15,11 @@ import javax.swing.JOptionPane;
 public class Clock extends javax.swing.JFrame {
 
     //Default for the snoozetime
-    private  int snoozetime = 5;
+    private int snoozetime = 5;
+    private int TimetogetReady = 0;
+    String StartLocation = "", EndLocation = "Troy University, AL";
+    private ArrayList<Alarm> Alarms = new ArrayList();
+    private ArrayList<StudentClass> ClassList;
     
     public Clock() {
         //Initialize the components in the desgin
@@ -41,6 +46,9 @@ public class Clock extends javax.swing.JFrame {
                     int minute = cal.get(Calendar.MINUTE);
                     int AM_PM = cal.get(Calendar.AM_PM);
                     int day = cal.get(Calendar.DAY_OF_WEEK);
+                    if(hour == 0){
+                        hour = 12;
+                    }
                     String night_day;
                     
                     if(AM_PM == 0){
@@ -50,7 +58,7 @@ public class Clock extends javax.swing.JFrame {
                         night_day = "PM";
                     }
                     
-                    ClockLabel.setText(hour + ":" + minute + " " + night_day);
+                    ClockLabel.setText(String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day);
                     
                     switch(day){
                         case 1:
@@ -373,31 +381,103 @@ private class AddAlarmToneListener implements ActionListener{
     
     private class importScheduleListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the import schedule page
+            final Schedule classSchedule = new Schedule();
+            classSchedule.setVisible(true);
+            classSchedule.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    ClassList = (ArrayList<StudentClass>) classSchedule.getClassList().clone();
+                    
+                    classSchedule.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                }); 
         }
     }
     
     private class viewScheduleListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the view schedule page
+            if(ClassList == null){
+                JOptionPane.showMessageDialog(null,"Please import schedule first!","Error",JOptionPane.ERROR_MESSAGE);
+            }
+            else{
+                final Schedule classSchedule = new Schedule(ClassList);
+                classSchedule.setVisible(true);
+                classSchedule.addComponentListener(new ComponentAdapter() {
+                    public void componentHidden(ComponentEvent e) 
+                    {
+                        classSchedule.dispose();
+                    }
+                    public void componentShown(ComponentEvent e) {
+                        /* code run when component shown */
+                    }
+                    }); 
+            }
         }
     }
     
     private class setRouteListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the setRoute page
+           //Create a setTimer object and set is to be visible
+            final setRoute RouteSetup = new setRoute();
+            RouteSetup.setVisible(true);
+            StartLocation = RouteSetup.getStartLocation();
+            TimetogetReady = RouteSetup.getTimetogetReady();
+            //when the user closes the window it will hide
+            //need to dispose the window when it is hidden
+            //doing this not to close the whole application when close is clicked
+            RouteSetup.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    RouteSetup.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                }); 
         }
     }
     
     private class newAlarmListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the new alarm page
+            final Alarm a = new Alarm();
+            a.setVisible(true);
+            a.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    Alarm newAlarm = a.getAlarm();
+                    if(newAlarm.getAlarmName() != null){
+                        Alarms.add(newAlarm);
+                    }
+                    a.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                });
         }
     }
     
     private class viewAlarmListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the view alarm page
+           final AlarmListView List = new AlarmListView(Alarms);
+            List.setVisible(true);
+            List.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    ArrayList<Integer> deletealarms = List.getdeletedItems();
+                    for(int d =0; d< deletealarms.size(); d++){
+                        int a = deletealarms.get(d);
+                        Alarms.remove(a);
+                    }
+                    List.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                }); 
         }
     }
     private class TimerListener implements ActionListener{
@@ -424,15 +504,18 @@ private class AddAlarmToneListener implements ActionListener{
    
     private class setSnoozeListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-           String str = JOptionPane.showInputDialog(null, "Set Snooze time: ", "Set Snooze",JOptionPane.INFORMATION_MESSAGE);
-           //Adding validation. if the user enters cancel or chooses not to enter anything.
-           //The snoozetime will default to 5 minutes. 
-           if( str != null && !str.isEmpty()){
-                snoozetime = Integer.parseInt(str);
-           }
-           else{
-               snoozetime = 5;
-           }
+          final Snooze snoozeinstance = new Snooze();
+          snoozeinstance.setVisible(true);
+          snoozeinstance.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    snoozetime = snoozeinstance.getsnoozetime();
+                    snoozeinstance.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                });
         }
     }
     private class SnoozeListener implements ActionListener{
