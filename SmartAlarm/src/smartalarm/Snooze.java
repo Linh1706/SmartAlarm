@@ -4,8 +4,6 @@
  */
 package smartalarm;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 /**
  *
@@ -17,14 +15,6 @@ public class Snooze extends javax.swing.JFrame {
     
     public Snooze() {
         initComponents();
-        SnoozeTextField.addKeyListener(new KeyAdapter() {
-            public void keyTyped(KeyEvent e) {
-                char caracter = e.getKeyChar();
-                if ((caracter < '0') || (caracter > '9')) {
-                    e.consume();
-                }
-            }
-        });
     }
 
     /**
@@ -38,11 +28,10 @@ public class Snooze extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         SnoozeLabel = new javax.swing.JLabel();
-        SnoozeTextField = new javax.swing.JTextField();
         setButton = new javax.swing.JButton();
+        SnoozeBox = new javax.swing.JComboBox();
 
         setTitle("Set Snooze");
-        setPreferredSize(new java.awt.Dimension(448, 300));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -58,6 +47,9 @@ public class Snooze extends javax.swing.JFrame {
             }
         });
 
+        SnoozeBox.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        SnoozeBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15" }));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -65,9 +57,9 @@ public class Snooze extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(SnoozeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(SnoozeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(83, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SnoozeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(122, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(setButton)
@@ -79,7 +71,7 @@ public class Snooze extends javax.swing.JFrame {
                 .addContainerGap(121, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SnoozeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SnoozeTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(SnoozeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(33, 33, 33)
                 .addComponent(setButton)
                 .addGap(51, 51, 51))
@@ -100,9 +92,7 @@ public class Snooze extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void setButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setButtonActionPerformed
-        String time = SnoozeTextField.getText();
-        if(time == null || time.isEmpty()) snoozetime = 5;
-        snoozetime = Integer.parseInt(time);
+        snoozetime = Integer.parseInt(SnoozeBox.getSelectedItem().toString());
         setVisible(false);
     }//GEN-LAST:event_setButtonActionPerformed
 
@@ -144,8 +134,8 @@ public class Snooze extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox SnoozeBox;
     private javax.swing.JLabel SnoozeLabel;
-    private javax.swing.JTextField SnoozeTextField;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton setButton;
     // End of variables declaration//GEN-END:variables
