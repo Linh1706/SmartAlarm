@@ -31,6 +31,14 @@ public class Alarm extends javax.swing.JFrame {
         SaturdayToggleButton.addActionListener(new ColorchangeListener(SaturdayToggleButton,"Saturday"));
         Days = new ArrayList();
     }
+    
+    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone){
+        this.AlarmName = name;
+        Days = new ArrayList(Day);
+        this.time = time;
+        this.Repeat = R;
+        this.Tone = Tone;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -261,7 +269,7 @@ public class Alarm extends javax.swing.JFrame {
             Tone = "DefaultTone";
         }
         if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
-        time = HourBox.getSelectedItem().toString() + ":" + MinBox.getSelectedItem().toString() + " " + AM_PMBox.getSelectedItem().toString();
+        time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
         setVisible(false);
     }//GEN-LAST:event_SaveButtonActionPerformed
 
