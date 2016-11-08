@@ -25,6 +25,7 @@ public class Clock extends javax.swing.JFrame {
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
     Alarm SnoozeAlarm = new Alarm();
+    int currentAlarm =-1;
     
     public Clock() {
         //Initialize the components in the desgin
@@ -95,23 +96,31 @@ public class Clock extends javax.swing.JFrame {
                             dayofweek = "Saturday";
                             break;
                     }
+                    
                     for(int t=0; t< Alarms.size(); t++){
                         if(time.compareTo(Alarms.get(t).getTime())== 0){
-                            if(Alarms.get(t).getDays().size() > 1){
-                                for(int d=0; d< Alarms.get(t).getDays().size(); d++){
-                                    if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
-                                        //sound alarm
+                            if(Alarms.get(t).getEnabled()){
+                                if(Alarms.get(t).getDays().size() > 1){
+                                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                                            //sound alarm
+                                        }
                                     }
                                 }
-                            }
-                            else{
-                               if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
-                                    play.Play("nothingatall.mp3");
-                                    SnoozeAlarm = Alarms.get(t);
-                                   if(!Alarms.get(t).getRepeat()){
-                                     Alarms.remove(t);
+                                else{
+                                   if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
+                                       if(currentAlarm != t){
+                                            play.Play("nothingatall.mp3");
+                                            SnoozeAlarm = Alarms.get(t).getAlarm();
+                                       }
+                                       if(!Alarms.get(t).getRepeat()){
+                                         Alarms.get(t).setenabled(false);
+                                       }
+                                       else{
+                                           currentAlarm = t;
+                                       }
                                    }
-                               }
+                                }
                             }
                             
                         }

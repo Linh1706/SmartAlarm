@@ -19,6 +19,7 @@ public class Alarm extends javax.swing.JFrame {
     private ArrayList<String> Days;
     private String Tone;
     private String time;
+    private boolean enabled;
     
     public Alarm() {
         initComponents();
@@ -38,6 +39,7 @@ public class Alarm extends javax.swing.JFrame {
         this.time = time;
         this.Repeat = R;
         this.Tone = Tone;
+        this.enabled =true;
     }
 
     /**
@@ -262,6 +264,7 @@ public class Alarm extends javax.swing.JFrame {
         AlarmName = NameTextField.getText();
         if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
         Repeat = RepeatCheckBox.isSelected();
+        enabled = true;
         if(AlarmToneBox.getSelectedItem() != null){
             Tone = AlarmToneBox.getSelectedItem().toString();
         }
@@ -305,7 +308,12 @@ public class Alarm extends javax.swing.JFrame {
     public String getTime(){
         return time;
     }
-    
+    public boolean getEnabled(){
+        return enabled;
+    }
+    public void setenabled(boolean value){
+        this.enabled = value;
+    }
     public String getTone(){
         return Tone;
     }

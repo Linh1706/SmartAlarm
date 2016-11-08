@@ -47,7 +47,6 @@ public final class MusicGui extends javax.swing.JFrame {
         StopButton = new javax.swing.JButton();
 
         setTitle("Alarm Tones");
-        setAlwaysOnTop(true);
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -213,7 +212,7 @@ public final class MusicGui extends javax.swing.JFrame {
         String filename = chosenFile.getName();
         String extension = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
         if(!extension.equals("mp3")){
-            JOptionPane.showMessageDialog(this,"Wrong File Format!","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(jPanel1,"Wrong File Format!","Error",JOptionPane.ERROR_MESSAGE);
         }
         else{
             tones.add(chosenFile.getName());
