@@ -405,7 +405,9 @@
             </Property>
             <Property name="maximumRowCount" type="int" value="30"/>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="0"/>
+              <StringArray count="1">
+                <StringItem index="0" value="nothingatall.mp3"/>
+              </StringArray>
             </Property>
           </Properties>
         </Component>

@@ -43,7 +43,6 @@ public final class MusicGui extends javax.swing.JFrame {
         UploadButton = new javax.swing.JButton();
         DeleteButton = new javax.swing.JButton();
         PlayButton = new javax.swing.JButton();
-        PauseButton = new javax.swing.JButton();
         StopButton = new javax.swing.JButton();
 
         setTitle("Alarm Tones");
@@ -51,11 +50,6 @@ public final class MusicGui extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
         MusicList.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        MusicList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "good-morning.mp3" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         MusicList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(MusicList);
 
@@ -91,15 +85,6 @@ public final class MusicGui extends javax.swing.JFrame {
             }
         });
 
-        PauseButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        PauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartalarm/images/1476497054_icon-ios7-pause.png"))); // NOI18N
-        PauseButton.setToolTipText("");
-        PauseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PauseButtonActionPerformed(evt);
-            }
-        });
-
         StopButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         StopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartalarm/images/1476497110_player_stop.png"))); // NOI18N
         StopButton.setToolTipText("");
@@ -126,11 +111,9 @@ public final class MusicGui extends javax.swing.JFrame {
                         .addComponent(DeleteButton, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(PlayButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(PauseButton)
-                        .addGap(34, 34, 34)
+                        .addGap(30, 30, 30)
                         .addComponent(StopButton)))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addContainerGap(191, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,7 +128,6 @@ public final class MusicGui extends javax.swing.JFrame {
                             .addComponent(DeleteButton))
                         .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PauseButton)
                             .addComponent(PlayButton)
                             .addComponent(StopButton))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -180,11 +162,6 @@ public final class MusicGui extends javax.swing.JFrame {
        }
         
     }//GEN-LAST:event_PlayButtonActionPerformed
-
-    private void PauseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PauseButtonActionPerformed
-
-        Player.Pause();
-    }//GEN-LAST:event_PauseButtonActionPerformed
 
     private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopButtonActionPerformed
         Player.Stop();
@@ -269,7 +246,6 @@ public final class MusicGui extends javax.swing.JFrame {
     private javax.swing.JButton DeleteButton;
     private javax.swing.JLabel MusicLabel;
     private javax.swing.JList MusicList;
-    private javax.swing.JButton PauseButton;
     private javax.swing.JButton PlayButton;
     private javax.swing.JButton StopButton;
     private javax.swing.JButton UploadButton;
@@ -277,9 +253,4 @@ public final class MusicGui extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-    private static class ArrayListImpl extends ArrayList {
-
-        public ArrayListImpl() {
-        }
-    }
 }

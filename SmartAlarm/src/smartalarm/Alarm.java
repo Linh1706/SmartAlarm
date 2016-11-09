@@ -71,7 +71,6 @@ public class Alarm extends javax.swing.JFrame {
         SaveButton = new javax.swing.JButton();
 
         setTitle("Add New Alarm");
-        setPreferredSize(new java.awt.Dimension(448, 425));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -143,6 +142,7 @@ public class Alarm extends javax.swing.JFrame {
 
         AlarmToneBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         AlarmToneBox.setMaximumRowCount(30);
+        AlarmToneBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "nothingatall.mp3" }));
 
         AlarmToneLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         AlarmToneLabel.setForeground(new java.awt.Color(0, 0, 153));
