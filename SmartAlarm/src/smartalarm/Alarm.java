@@ -19,6 +19,7 @@ public class Alarm extends javax.swing.JFrame {
     private ArrayList<String> Days;
     private String Tone;
     private String time;
+    private boolean enabled;
     
     public Alarm() {
         initComponents();
@@ -30,6 +31,15 @@ public class Alarm extends javax.swing.JFrame {
         FridayToggleButton.addActionListener(new ColorchangeListener(FridayToggleButton,"Friday"));
         SaturdayToggleButton.addActionListener(new ColorchangeListener(SaturdayToggleButton,"Saturday"));
         Days = new ArrayList();
+    }
+    
+    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone){
+        this.AlarmName = name;
+        Days = new ArrayList(Day);
+        this.time = time;
+        this.Repeat = R;
+        this.Tone = Tone;
+        this.enabled =true;
     }
 
     /**
@@ -61,7 +71,6 @@ public class Alarm extends javax.swing.JFrame {
         SaveButton = new javax.swing.JButton();
 
         setTitle("Add New Alarm");
-        setPreferredSize(new java.awt.Dimension(448, 425));
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
 
@@ -133,6 +142,7 @@ public class Alarm extends javax.swing.JFrame {
 
         AlarmToneBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         AlarmToneBox.setMaximumRowCount(30);
+        AlarmToneBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "nothingatall.mp3" }));
 
         AlarmToneLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         AlarmToneLabel.setForeground(new java.awt.Color(0, 0, 153));
@@ -254,6 +264,7 @@ public class Alarm extends javax.swing.JFrame {
         AlarmName = NameTextField.getText();
         if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
         Repeat = RepeatCheckBox.isSelected();
+        enabled = true;
         if(AlarmToneBox.getSelectedItem() != null){
             Tone = AlarmToneBox.getSelectedItem().toString();
         }
@@ -261,7 +272,7 @@ public class Alarm extends javax.swing.JFrame {
             Tone = "DefaultTone";
         }
         if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
-        time = HourBox.getSelectedItem().toString() + ":" + MinBox.getSelectedItem().toString() + " " + AM_PMBox.getSelectedItem().toString();
+        time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
         setVisible(false);
     }//GEN-LAST:event_SaveButtonActionPerformed
 
@@ -297,7 +308,12 @@ public class Alarm extends javax.swing.JFrame {
     public String getTime(){
         return time;
     }
-    
+    public boolean getEnabled(){
+        return enabled;
+    }
+    public void setenabled(boolean value){
+        this.enabled = value;
+    }
     public String getTone(){
         return Tone;
     }

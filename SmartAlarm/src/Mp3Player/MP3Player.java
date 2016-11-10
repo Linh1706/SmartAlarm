@@ -37,7 +37,7 @@ public class MP3Player
             pauseLocation = 0;
             songTotalLength = 0;
             player.close();
-            MP3PlayerGUI.DisplayName.setText("Smart Alarm");
+            //MP3PlayerGUI.DisplayName.setText("Smart Alarm");
         }
     }
     
@@ -55,7 +55,7 @@ public class MP3Player
         }
         catch (FileNotFoundException | JavaLayerException ex)
         {
-            
+            System.out.println("File not found");
         } catch (IOException ex) {
             Logger.getLogger(MP3Player.class.getName()).log(Level.SEVERE, null, ex);
         }

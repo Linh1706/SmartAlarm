@@ -1,6 +1,8 @@
 
 package smartalarm;
 
+import Mp3Player.MP3Player;
+import Mp3Player.MusicGui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,10 @@ public class Clock extends javax.swing.JFrame {
     String StartLocation = "", EndLocation = "Troy University, AL";
     private ArrayList<Alarm> Alarms = new ArrayList();
     private ArrayList<StudentClass> ClassList;
+    MP3Player play = new MP3Player();
+    boolean snoozeactive =false;
+    Alarm SnoozeAlarm = new Alarm();
+    int currentAlarm =-1;
     
     public Clock() {
         //Initialize the components in the desgin
@@ -57,31 +63,67 @@ public class Clock extends javax.swing.JFrame {
                     else{
                         night_day = "PM";
                     }
-                    
-                    ClockLabel.setText(String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day);
-                    
+                    String time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
+                    ClockLabel.setText(time);
+                    String dayofweek ="";
                     switch(day){
                         case 1:
                             SundayLabel.setForeground(Color.green);
+                            dayofweek = "Sunday";
                             break;
                         case 2:
                             MondayLabel.setForeground(Color.green);
+                            dayofweek = "Monday";
                             break;
                         case 3:
                             TuesdayLabel.setForeground(Color.green);
+                            dayofweek = "Tuesday";
                             break;
                         case 4:
                             WednesdayLabel.setForeground(Color.green);
+                            dayofweek = "Wednesday";
                             break;
                         case 5:
                             ThursdayLabel.setForeground(Color.green);
+                            dayofweek = "Thursday";
                             break;
                         case 6:
                             FridayLabel.setForeground(Color.green);
+                            dayofweek = "Friday";
                             break;
                         case 7:
                             SaturdayLabel.setForeground(Color.green);
+                            dayofweek = "Saturday";
                             break;
+                    }
+                    
+                    for(int t=0; t< Alarms.size(); t++){
+                        if(time.compareTo(Alarms.get(t).getTime())== 0){
+                            if(Alarms.get(t).getEnabled()){
+                                if(Alarms.get(t).getDays().size() > 1){
+                                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                                            //sound alarm
+                                        }
+                                    }
+                                }
+                                else{
+                                   if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
+                                       if(currentAlarm != t){
+                                            play.Play("nothingatall.mp3");
+                                            SnoozeAlarm = Alarms.get(t).getAlarm();
+                                       }
+                                       if(!Alarms.get(t).getRepeat()){
+                                         Alarms.get(t).setenabled(false);
+                                       }
+                                       else{
+                                           currentAlarm = t;
+                                       }
+                                   }
+                                }
+                            }
+                            
+                        }
                     }
                 }
             }
@@ -104,6 +146,7 @@ public class Clock extends javax.swing.JFrame {
         FridayLabel = new javax.swing.JLabel();
         SaturdayLabel = new javax.swing.JLabel();
         SnoozeButton = new javax.swing.JButton();
+        DismissButton = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         AlarmToneMenuItem = new javax.swing.JMenuItem();
@@ -209,6 +252,16 @@ public class Clock extends javax.swing.JFrame {
         SnoozeButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         SnoozeButton.setBorderPainted(false);
 
+        DismissButton.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        DismissButton.setText("Dismiss");
+        DismissButton.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        DismissButton.setBorderPainted(false);
+        DismissButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DismissButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -231,6 +284,8 @@ public class Clock extends javax.swing.JFrame {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(74, 74, 74))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(DismissButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
                         .addComponent(SnoozeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
@@ -238,8 +293,10 @@ public class Clock extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(SnoozeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SnoozeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(DismissButton, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(68, 68, 68)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ClockLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -248,7 +305,7 @@ public class Clock extends javax.swing.JFrame {
                         .addComponent(NextEventContentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jMenuBar.setBackground(new java.awt.Color(0, 0, 0));
@@ -310,6 +367,10 @@ public class Clock extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void DismissButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DismissButtonActionPerformed
+        play.Stop();
+    }//GEN-LAST:event_DismissButtonActionPerformed
     
     /**
      * @param args the command line arguments
@@ -349,6 +410,7 @@ public class Clock extends javax.swing.JFrame {
     private javax.swing.JMenu AlarmMenu;
     private javax.swing.JMenuItem AlarmToneMenuItem;
     private javax.swing.JLabel ClockLabel;
+    private javax.swing.JButton DismissButton;
     private javax.swing.JMenu FileMenu;
     private javax.swing.JLabel FridayLabel;
     private javax.swing.JLabel MondayLabel;
@@ -375,7 +437,17 @@ public class Clock extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 private class AddAlarmToneListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            //link you to the music page
+            final MusicGui  Music = new MusicGui();
+            Music.setVisible(true);
+            Music.addComponentListener(new ComponentAdapter() {
+                public void componentHidden(ComponentEvent e) 
+                {
+                    Music.dispose();
+                }
+                public void componentShown(ComponentEvent e) {
+                    /* code run when component shown */
+                }
+                }); 
         }
     }
     
@@ -521,6 +593,23 @@ private class AddAlarmToneListener implements ActionListener{
     private class SnoozeListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
             //When the snooze is pressed we delay the alarm by snooze time.
+            play.Stop();
+            String time = SnoozeAlarm.getTime();
+            String [] timespots = time.split(":");
+            String [] strmins = timespots[1].split(" ");
+            int mins = Integer.parseInt(strmins[0]);
+            int newmins = mins + snoozetime;
+            String newtime = "";
+            if(newmins > 60 ){
+                int m = newmins - 60;
+                int h = Integer.parseInt(timespots[0]) + 1;
+                newtime = String.format("%02d", h) + ":" + String.format("%02d",m) + " "+ strmins[1];
+            }
+            else{
+                newtime = timespots[0] + ":" + String.format("%02d",newmins) + " "+ strmins[1];
+            }
+            
+            Alarms.add(new Alarm(SnoozeAlarm.getName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone()));
         }
     }
 }
