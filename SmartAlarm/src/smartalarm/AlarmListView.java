@@ -19,7 +19,7 @@ import javax.swing.table.TableModel;
 public class AlarmListView extends javax.swing.JFrame {
 
     private ArrayList<Alarm> AlarmsR;
-    private boolean deleteEnabled = false;
+    private boolean deleteEnabled;
     public AlarmListView(ArrayList<Alarm> Alarms) {
         initComponents();
         AlarmsR = Alarms;
@@ -33,7 +33,7 @@ public class AlarmListView extends javax.swing.JFrame {
                 column.setPreferredWidth(50);
             }
         }    
-    
+        deleteEnabled = false;
         jTable1.getModel().addTableModelListener(new MyTableListener());
     }
 
@@ -96,13 +96,14 @@ public class AlarmListView extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(DeleteButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(DeleteButton))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,6 +140,7 @@ public class AlarmListView extends javax.swing.JFrame {
                 boolean checked = Boolean.parseBoolean(data.toString());
                 AlarmsR.get(row).setenabled(checked);
             }
+            deleteEnabled = false;
         
           
         }
