@@ -24,7 +24,7 @@ public class Clock extends javax.swing.JFrame {
     private ArrayList<StudentClass> ClassList;
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
-    Alarm SnoozeAlarm = new Alarm();
+    Alarm SnoozeAlarm;
     int currentAlarm =-1;
     
     public Clock() {
@@ -539,11 +539,6 @@ private class AddAlarmToneListener implements ActionListener{
             List.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
-                    ArrayList<Integer> deletealarms = List.getdeletedItems();
-                    for(int d =0; d< deletealarms.size(); d++){
-                        int a = deletealarms.get(d);
-                        Alarms.remove(a);
-                    }
                     List.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
@@ -609,7 +604,7 @@ private class AddAlarmToneListener implements ActionListener{
                 newtime = timespots[0] + ":" + String.format("%02d",newmins) + " "+ strmins[1];
             }
             
-            Alarms.add(new Alarm(SnoozeAlarm.getName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone()));
+            Alarms.add(new Alarm(SnoozeAlarm.getAlarmName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone()));
         }
     }
 }

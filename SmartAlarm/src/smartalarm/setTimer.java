@@ -1,6 +1,7 @@
 
 package smartalarm;
 
+import Mp3Player.MP3Player;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
@@ -13,6 +14,7 @@ public class setTimer extends javax.swing.JFrame {
     private int sec;
     private int totalmiliseconds;
     private Timer time;
+    private MP3Player player = new MP3Player();
     
     public setTimer() {
         
@@ -252,8 +254,9 @@ public class setTimer extends javax.swing.JFrame {
             
              //when the totalmilisecond reach 0 then stop the timer
             if(totalmiliseconds <= 0){
-                //add play sound here
+                player.Play("small-bell-ringing-01.mp3");
                 time.stop();
+                StartTimerButton.setEnabled(false);
             }
             totalmiliseconds = totalmiliseconds - 1000;
         }
@@ -284,7 +287,7 @@ public class setTimer extends javax.swing.JFrame {
     private class StopTimerListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
             time.stop();
-           
+            player.Stop();
         }
     }
     

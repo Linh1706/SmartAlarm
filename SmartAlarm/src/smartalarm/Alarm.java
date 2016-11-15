@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 
 /*
@@ -77,7 +78,7 @@ public class Alarm extends javax.swing.JFrame {
         HourBox.setBackground(new java.awt.Color(153, 153, 153));
         HourBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         HourBox.setForeground(new java.awt.Color(0, 0, 153));
-        HourBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
+        HourBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
 
         MinBox.setBackground(new java.awt.Color(153, 153, 153));
         MinBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -261,19 +262,24 @@ public class Alarm extends javax.swing.JFrame {
 
     //method called when save button is clicked
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        AlarmName = NameTextField.getText();
-        if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
-        Repeat = RepeatCheckBox.isSelected();
-        enabled = true;
-        if(AlarmToneBox.getSelectedItem() != null){
-            Tone = AlarmToneBox.getSelectedItem().toString();
+        if(Days.isEmpty()){
+             JOptionPane.showMessageDialog(jPanel1,"Please select a day!","Error",JOptionPane.ERROR_MESSAGE);
         }
         else{
-            Tone = "DefaultTone";
+            AlarmName = NameTextField.getText();
+            if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
+            Repeat = RepeatCheckBox.isSelected();
+            enabled = true;
+            if(AlarmToneBox.getSelectedItem() != null){
+                Tone = AlarmToneBox.getSelectedItem().toString();
+            }
+            else{
+                Tone = "DefaultTone";
+            }
+            if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
+            time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
+            setVisible(false);
         }
-        if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
-        time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
-        setVisible(false);
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     //method called when toggle button is clicked
