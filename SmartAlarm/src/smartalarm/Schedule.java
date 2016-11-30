@@ -50,16 +50,24 @@ public class Schedule extends javax.swing.JFrame {
     public Schedule() {
         initComponents();
         Classes = new ArrayList();
-        ViewPanel.setVisible(false);
+       // ViewPanel.setVisible(false);
     }
     
-    public Schedule(ArrayList<StudentClass> List){
+    /*public Schedule(ArrayList<StudentClass> List){
         initComponents();
         Classes = new ArrayList();
         ImportPanel.setVisible(false);
         ClassList.setListData(ConvertclassForView(List));
+    }*/
+    public void ScheduleDigest(){
+        ViewPanel.setVisible(false);
+        ImportPanel.setVisible(true);
     }
-
+    public void ScheduleView(ArrayList<StudentClass> List){
+        ImportPanel.setVisible(false);
+        ViewPanel.setVisible(true);
+        ClassList.setListData(ConvertclassForView(List));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -219,6 +227,8 @@ public class Schedule extends javax.swing.JFrame {
 
     private void ImportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ImportButtonActionPerformed
         setVisible(false);
+        ImportButton.setEnabled(false);
+        SchedulePathTextField.setText("");
         FileInputStream fin = null;
         String classname = null, start = null, end = null, location = null;
         int day = -1;
@@ -298,7 +308,7 @@ public class Schedule extends javax.swing.JFrame {
         setVisible(false);
     }//GEN-LAST:event_DoneButtonActionPerformed
     private String[] ConvertclassForView(ArrayList<StudentClass> classes){
-        if(classes.isEmpty())System.out.println("classes empty");
+        //if(classes.isEmpty())System.out.println("classes empty");
          String [] classtrings = new String[classes.size()];
         for(int i=0; i< classes.size(); i++){
             StudentClass sc = classes.get(i);

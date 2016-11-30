@@ -282,6 +282,29 @@ public class Alarm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_SaveButtonActionPerformed
 
+    public void defaultvalues(){
+        NameTextField.setText("");
+        RepeatCheckBox.setSelected(false);
+        AlarmToneBox.setSelectedIndex(0);
+        HourBox.setSelectedIndex(0);
+        MinBox.setSelectedIndex(0);
+        AM_PMBox.setSelectedIndex(0);
+        SundayToggleButton.setSelected(false);
+        SundayToggleButton.setForeground(Color.BLACK);
+        MondayToggleButton.setSelected(false);
+        MondayToggleButton.setForeground(Color.BLACK);
+        SaturdayToggleButton.setSelected(false);
+        SaturdayToggleButton.setForeground(Color.BLACK);
+        TuesdayToggleButton.setSelected(false);
+        TuesdayToggleButton.setForeground(Color.BLACK);
+        WednesdayToggleButton.setSelected(false);
+        WednesdayToggleButton.setForeground(Color.BLACK);
+        ThursdayToggleButton.setSelected(false);
+        ThursdayToggleButton.setForeground(Color.BLACK);
+        FridayToggleButton.setSelected(false);
+        FridayToggleButton.setForeground(Color.BLACK);
+        Days.clear();
+    }
     //method called when toggle button is clicked
     /*
      * if selected the text will be green and added to the days array.
@@ -299,6 +322,7 @@ public class Alarm extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent e) {
            if (Button.isSelected()){
                 Button.setForeground(Color.GREEN);
+                System.out.println(Day);
                 Days.add(Day);
             } else {
                 Button.setForeground(Color.BLACK);

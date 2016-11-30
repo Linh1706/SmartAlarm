@@ -27,6 +27,14 @@ public class Clock extends javax.swing.JFrame {
     Alarm SnoozeAlarm;
     int currentAlarm =-1;
     
+    Schedule classSchedule = new Schedule();
+    MusicGui  Music = new MusicGui();
+    setRoute RouteSetup = new setRoute();
+    Alarm a = new Alarm();
+    setTimer timer = new setTimer();
+    Snooze snoozeinstance = new Snooze();
+    AlarmListView AList = new AlarmListView(Alarms);
+    
     public Clock() {
         //Initialize the components in the desgin
         initComponents();
@@ -110,6 +118,7 @@ public class Clock extends javax.swing.JFrame {
                                 else{
                                    if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
                                        if(currentAlarm != t){
+                                            play.Stop();
                                             play.Play("nothingatall.mp3");
                                             SnoozeAlarm = Alarms.get(t).getAlarm();
                                        }
@@ -437,8 +446,12 @@ public class Clock extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 private class AddAlarmToneListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            final MusicGui  Music = new MusicGui();
-            Music.setVisible(true);
+            if(!Music.isVisible()){
+                Music.setVisible(true);
+            }
+            else{
+                Music.toFront();
+            }
             Music.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
@@ -453,8 +466,15 @@ private class AddAlarmToneListener implements ActionListener{
     
     private class importScheduleListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            final Schedule classSchedule = new Schedule();
-            classSchedule.setVisible(true);
+            if(classSchedule.isVisible()){
+                classSchedule.dispose();
+                classSchedule.ScheduleDigest();
+                classSchedule.setVisible(true);
+            }
+            else{
+                classSchedule.ScheduleDigest();
+                classSchedule.setVisible(true);
+            }
             classSchedule.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
@@ -471,21 +491,19 @@ private class AddAlarmToneListener implements ActionListener{
     
     private class viewScheduleListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            if(ClassList == null){
+            if(ClassList == null || ClassList.isEmpty()){
                 JOptionPane.showMessageDialog(null,"Please import schedule first!","Error",JOptionPane.ERROR_MESSAGE);
             }
             else{
-                final Schedule classSchedule = new Schedule(ClassList);
-                classSchedule.setVisible(true);
-                classSchedule.addComponentListener(new ComponentAdapter() {
-                    public void componentHidden(ComponentEvent e) 
-                    {
-                        classSchedule.dispose();
-                    }
-                    public void componentShown(ComponentEvent e) {
-                        /* code run when component shown */
-                    }
-                    }); 
+                if(classSchedule.isVisible()){
+                    classSchedule.dispose();
+                    classSchedule.ScheduleView(ClassList);
+                    classSchedule.setVisible(true);
+                }
+                else{
+                    classSchedule.ScheduleView(ClassList);
+                    classSchedule.setVisible(true);
+                }
             }
         }
     }
@@ -493,16 +511,20 @@ private class AddAlarmToneListener implements ActionListener{
     private class setRouteListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
            //Create a setTimer object and set is to be visible
-            final setRoute RouteSetup = new setRoute();
-            RouteSetup.setVisible(true);
-            StartLocation = RouteSetup.getStartLocation();
-            TimetogetReady = RouteSetup.getTimetogetReady();
+            if(!RouteSetup.isVisible()){
+                RouteSetup.setVisible(true);
+            }
+            else{
+                RouteSetup.toFront();
+            }
             //when the user closes the window it will hide
             //need to dispose the window when it is hidden
             //doing this not to close the whole application when close is clicked
             RouteSetup.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
+                    StartLocation = RouteSetup.getStartLocation();
+                    TimetogetReady = RouteSetup.getTimetogetReady();
                     RouteSetup.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
@@ -514,14 +536,17 @@ private class AddAlarmToneListener implements ActionListener{
     
     private class newAlarmListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-            final Alarm a = new Alarm();
-            a.setVisible(true);
+                a.dispose();
+                a = new Alarm();
+                a.setVisible(true);
+            
             a.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
                     Alarm newAlarm = a.getAlarm();
                     if(newAlarm.getAlarmName() != null){
                         Alarms.add(newAlarm);
+                        System.out.println(newAlarm.getDays().toString());
                     }
                     a.dispose();
                 }
@@ -534,12 +559,14 @@ private class AddAlarmToneListener implements ActionListener{
     
     private class viewAlarmListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-           final AlarmListView List = new AlarmListView(Alarms);
-            List.setVisible(true);
-            List.addComponentListener(new ComponentAdapter() {
+                AList.dispose();
+                AList = new AlarmListView(Alarms);
+                AList.setVisible(true);
+
+            AList.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {
-                    List.dispose();
+                    AList.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
                     /* code run when component shown */
@@ -550,8 +577,13 @@ private class AddAlarmToneListener implements ActionListener{
     private class TimerListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
             //Create a setTimer object and set is to be visible
-            final setTimer timer = new setTimer();
-            timer.setVisible(true);
+            if(!timer.isVisible()){
+                timer.Reset();
+                timer.setVisible(true);
+            }
+            else{
+                timer.toFront();
+            }
             //when the user closes the window it will hide
             //need to dispose the window when it is hidden
             //doing this not to close the whole application when close is clicked
@@ -571,8 +603,12 @@ private class AddAlarmToneListener implements ActionListener{
    
     private class setSnoozeListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
-          final Snooze snoozeinstance = new Snooze();
-          snoozeinstance.setVisible(true);
+          if(!snoozeinstance.isVisible()){
+             snoozeinstance.setVisible(true); 
+          }
+          else{
+              snoozeinstance.toFront();
+          }
           snoozeinstance.addComponentListener(new ComponentAdapter() {
                 public void componentHidden(ComponentEvent e) 
                 {

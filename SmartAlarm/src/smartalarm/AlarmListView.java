@@ -28,14 +28,20 @@ public class AlarmListView extends javax.swing.JFrame {
         for (int i = 0; i < 2; i++) {
             column = jTable1.getColumnModel().getColumn(i);
             if (i == 0) {
-                column.setPreferredWidth(200); 
+                column.setPreferredWidth(350); 
             } else {
                 column.setPreferredWidth(50);
             }
         }    
         deleteEnabled = false;
-        jTable1.getModel().addTableModelListener(new MyTableListener());
+       jTable1.getModel().addTableModelListener(new MyTableListener());
     }
+    
+    /*public void setAlarmView(ArrayList<Alarm> Alarms){
+        AlarmsR = Alarms;
+        ConvertAlarmsForView();
+        jTable1.getModel().addTableModelListener(new MyTableListener());
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -96,14 +102,13 @@ public class AlarmListView extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(DeleteButton))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(DeleteButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -162,7 +167,12 @@ public class AlarmListView extends javax.swing.JFrame {
          DefaultTableModel model2 = (DefaultTableModel)model;
         for(int i=0; i< AlarmsR.size(); i++){
             Alarm alarm = AlarmsR.get(i).getAlarm();
-            String stralarm = "Alarm Name: " + alarm.getAlarmName()+ "  Time: " + alarm.getTime();
+            ArrayList<String>D = alarm.getDays();
+            String Days="";
+            for(int t=0; t<D.size(); t++){
+                Days = D.get(t) + " "+ Days; 
+            }
+            String stralarm = "Alarm Name: " + alarm.getAlarmName()+ "  Time: " + alarm.getTime()+ " Days: " + Days;
             model2.addRow(new Object[]{stralarm, AlarmsR.get(i).getAlarm().getEnabled()});
         }
         jTable1.setModel(model2);
