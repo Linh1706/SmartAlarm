@@ -19,9 +19,10 @@ public class Clock extends javax.swing.JFrame {
     //Default for the snoozetime
     private int snoozetime = 5;
     private int TimetogetReady = 0;
-    String StartLocation = "", EndLocation = "Troy University, AL";
+    private static String StartLocation = "", EndLocation = "Troy University, AL",CityState ="";
     private ArrayList<Alarm> Alarms = new ArrayList();
     private ArrayList<StudentClass> ClassList;
+    private ArrayList<Thread> Threads= new ArrayList();
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
     Alarm SnoozeAlarm;
@@ -512,6 +513,7 @@ private class AddAlarmToneListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
            //Create a setTimer object and set is to be visible
             if(!RouteSetup.isVisible()){
+                RouteSetup.resetRoute();
                 RouteSetup.setVisible(true);
             }
             else{
@@ -524,6 +526,22 @@ private class AddAlarmToneListener implements ActionListener{
                 public void componentHidden(ComponentEvent e) 
                 {
                     StartLocation = RouteSetup.getStartLocation();
+                    if(StartLocation != null && !StartLocation.isEmpty()){
+                        String City = RouteSetup.getCityState();
+                        if(City.compareToIgnoreCase(CityState)!=0){
+                            if(!Threads.isEmpty()){
+                                for(int tt=0; tt<Threads.size(); tt++){
+                                    Threads.get(tt).interrupt();
+                                }
+                            }
+                            Runnable weathermonitor = new Weather(City);
+                            Thread threadW = new Thread(weathermonitor);
+                            Threads.add(threadW);
+                            threadW.start();
+                            CityState = City;
+                        }
+                    }
+                    
                     TimetogetReady = RouteSetup.getTimetogetReady();
                     RouteSetup.dispose();
                 }
@@ -531,6 +549,7 @@ private class AddAlarmToneListener implements ActionListener{
                     /* code run when component shown */
                 }
                 }); 
+            
         }
     }
     
