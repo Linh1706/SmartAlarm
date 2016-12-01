@@ -1,6 +1,8 @@
 
 package smartalarm;
 
+import Mp3Player.MP3Player;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
@@ -13,6 +15,7 @@ public class setTimer extends javax.swing.JFrame {
     private int sec;
     private int totalmiliseconds;
     private Timer time;
+    private MP3Player player = new MP3Player();
     
     public setTimer() {
         
@@ -43,6 +46,7 @@ public class setTimer extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         StartTimerButton = new javax.swing.JButton();
         StopTimerButton = new javax.swing.JButton();
+        ResetButton = new javax.swing.JButton();
 
         setTitle("Set Timer");
         setAlwaysOnTop(true);
@@ -108,7 +112,7 @@ public class setTimer extends javax.swing.JFrame {
                     .addGroup(JPanelLayout.createSequentialGroup()
                         .addGap(41, 41, 41)
                         .addComponent(SecBox, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, JPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(SetButton)
@@ -133,6 +137,7 @@ public class setTimer extends javax.swing.JFrame {
         );
 
         jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel1.setPreferredSize(new java.awt.Dimension(448, 249));
 
         jLabel1.setFont(new java.awt.Font("DS-Digital", 0, 80)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
@@ -143,32 +148,50 @@ public class setTimer extends javax.swing.JFrame {
 
         StopTimerButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/smartalarm/images/1476497110_player_stop.png"))); // NOI18N
 
+        ResetButton.setBackground(new java.awt.Color(255, 255, 255));
+        ResetButton.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        ResetButton.setForeground(new java.awt.Color(153, 153, 153));
+        ResetButton.setText("Reset");
+        ResetButton.setEnabled(false);
+        ResetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(94, 94, 94)
-                        .addComponent(StartTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(89, 89, 89)
-                        .addComponent(StopTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addGap(49, 49, 49)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(94, 94, 94)
+                .addComponent(StartTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(89, 89, 89)
+                .addComponent(StopTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ResetButton)
+                .addGap(30, 30, 30))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(StartTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(StopTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(32, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(StartTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(StopTimerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(43, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(ResetButton)
+                        .addGap(20, 20, 20))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -176,7 +199,7 @@ public class setTimer extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(JPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 433, Short.MAX_VALUE))
@@ -186,7 +209,7 @@ public class setTimer extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(JPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE))
         );
 
         jPanel1.getAccessibleContext().setAccessibleParent(this);
@@ -194,6 +217,17 @@ public class setTimer extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void ResetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetButtonActionPerformed
+        Reset();
+    }//GEN-LAST:event_ResetButtonActionPerformed
+    
+    public void Reset(){
+       HourBox.setSelectedIndex(0);
+        MinBox.setSelectedIndex(0);
+        SecBox.setSelectedIndex(0);
+        jPanel1.setVisible(false);
+        JPanel.setVisible(true); 
+    }
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -230,6 +264,7 @@ public class setTimer extends javax.swing.JFrame {
     private javax.swing.JComboBox HourBox;
     private javax.swing.JPanel JPanel;
     private javax.swing.JComboBox MinBox;
+    private javax.swing.JButton ResetButton;
     private javax.swing.JComboBox SecBox;
     private javax.swing.JButton SetButton;
     private javax.swing.JButton StartTimerButton;
@@ -252,8 +287,11 @@ public class setTimer extends javax.swing.JFrame {
             
              //when the totalmilisecond reach 0 then stop the timer
             if(totalmiliseconds <= 0){
-                //add play sound here
+                player.Play("small-bell-ringing-01.mp3");
                 time.stop();
+                StartTimerButton.setEnabled(false);
+                ResetButton.setForeground(Color.BLUE);
+                ResetButton.setEnabled(true);
             }
             totalmiliseconds = totalmiliseconds - 1000;
         }
@@ -268,6 +306,9 @@ public class setTimer extends javax.swing.JFrame {
             jLabel1.setText(String.format("%02d", hour) + ":" + String.format("%02d",min) + ":" + String.format("%02d",sec));
             //hide the set timer panel and set the countdown panel to visible
             JPanel.setVisible(false);
+            StartTimerButton.setEnabled(true);
+            ResetButton.setForeground(Color.GRAY);
+            ResetButton.setEnabled(false);
             jPanel1.setVisible(true);
             
             
@@ -284,7 +325,7 @@ public class setTimer extends javax.swing.JFrame {
     private class StopTimerListener implements ActionListener{
         public void actionPerformed(ActionEvent e){
             time.stop();
-           
+            player.Stop();
         }
     }
     

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 
 /*
@@ -77,7 +78,7 @@ public class Alarm extends javax.swing.JFrame {
         HourBox.setBackground(new java.awt.Color(153, 153, 153));
         HourBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
         HourBox.setForeground(new java.awt.Color(0, 0, 153));
-        HourBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
+        HourBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }));
 
         MinBox.setBackground(new java.awt.Color(153, 153, 153));
         MinBox.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -261,21 +262,49 @@ public class Alarm extends javax.swing.JFrame {
 
     //method called when save button is clicked
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
-        AlarmName = NameTextField.getText();
-        if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
-        Repeat = RepeatCheckBox.isSelected();
-        enabled = true;
-        if(AlarmToneBox.getSelectedItem() != null){
-            Tone = AlarmToneBox.getSelectedItem().toString();
+        if(Days.isEmpty()){
+             JOptionPane.showMessageDialog(jPanel1,"Please select a day!","Error",JOptionPane.ERROR_MESSAGE);
         }
         else{
-            Tone = "DefaultTone";
+            AlarmName = NameTextField.getText();
+            if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
+            Repeat = RepeatCheckBox.isSelected();
+            enabled = true;
+            if(AlarmToneBox.getSelectedItem() != null){
+                Tone = AlarmToneBox.getSelectedItem().toString();
+            }
+            else{
+                Tone = "DefaultTone";
+            }
+            if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
+            time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
+            setVisible(false);
         }
-        if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
-        time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
-        setVisible(false);
     }//GEN-LAST:event_SaveButtonActionPerformed
 
+    public void defaultvalues(){
+        NameTextField.setText("");
+        RepeatCheckBox.setSelected(false);
+        AlarmToneBox.setSelectedIndex(0);
+        HourBox.setSelectedIndex(0);
+        MinBox.setSelectedIndex(0);
+        AM_PMBox.setSelectedIndex(0);
+        SundayToggleButton.setSelected(false);
+        SundayToggleButton.setForeground(Color.BLACK);
+        MondayToggleButton.setSelected(false);
+        MondayToggleButton.setForeground(Color.BLACK);
+        SaturdayToggleButton.setSelected(false);
+        SaturdayToggleButton.setForeground(Color.BLACK);
+        TuesdayToggleButton.setSelected(false);
+        TuesdayToggleButton.setForeground(Color.BLACK);
+        WednesdayToggleButton.setSelected(false);
+        WednesdayToggleButton.setForeground(Color.BLACK);
+        ThursdayToggleButton.setSelected(false);
+        ThursdayToggleButton.setForeground(Color.BLACK);
+        FridayToggleButton.setSelected(false);
+        FridayToggleButton.setForeground(Color.BLACK);
+        Days.clear();
+    }
     //method called when toggle button is clicked
     /*
      * if selected the text will be green and added to the days array.
@@ -293,6 +322,7 @@ public class Alarm extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent e) {
            if (Button.isSelected()){
                 Button.setForeground(Color.GREEN);
+                System.out.println(Day);
                 Days.add(Day);
             } else {
                 Button.setForeground(Color.BLACK);
