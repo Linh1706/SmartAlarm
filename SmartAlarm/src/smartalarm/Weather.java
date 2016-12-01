@@ -35,22 +35,23 @@ import org.xml.sax.SAXException;
  */
 public class Weather implements Runnable{
      File weather = new File("Weather.xml");
-     String Location= "";
      String weatherstring= "";
+     String [] weatherlocations;
      
      public Weather(String StartLocation){
-         this.Location = StartLocation;
+         weatherlocations = new String[]{StartLocation,"Troy,AL"};
      }
      
      public void run() {
          while(!Thread.interrupted()){
+           for(int w=0; w<weatherlocations.length;w++){
          //Build the URI template to pass to the API
                 URI uri;
                  try {
                     uri = new URIBuilder()
                     .setScheme("http")
                     .setHost("api.wunderground.com")
-                    .setPath("/api/046b4ff5947720c4/conditions/q/" + Location + ".xml")
+                    .setPath("/api/046b4ff5947720c4/conditions/q/" + weatherlocations[w] + ".xml")
                     .build();
                     HttpGet httpget = new HttpGet(uri);
                     //System.out.println(httpget.getURI());
@@ -82,14 +83,11 @@ public class Weather implements Runnable{
                                         Node wea = observations.item(0);
                                         weatherstring = wea.getTextContent();
                                         //UNCOMMENT TO TEST WEATHER 
-                                        //System.out.println(weatherstring);
+                                        //System.out.println(weatherlocations[w]+ ": "+ weatherstring);
                                         //To be written to the database
                                     }
                                     
                              }
-                             Thread.sleep(1800000);
-                 } catch (InterruptedException ex) {
-                        Thread.currentThread().stop();
             }catch(IOException | SAXException | ParserConfigurationException e ){
                     Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, e);
                  }
@@ -97,6 +95,12 @@ public class Weather implements Runnable{
                     System.out.print("failed " + ex.toString());
                     Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
                  }
-         }        
-    }
+           }
+           try{
+             Thread.sleep(1800000);
+         } catch (InterruptedException ex) {
+             Thread.currentThread().stop();
+         }
+         } 
+     }
 }
