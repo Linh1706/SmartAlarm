@@ -81,6 +81,7 @@ public class Weather implements Runnable{
                                     else{
                                         Node wea = observations.item(0);
                                         weatherstring = wea.getTextContent();
+                                        //UNCOMMENT TO TEST WEATHER 
                                         //System.out.println(weatherstring);
                                         //To be written to the database
                                     }
