@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
 import org.json.*;
+
 /**
  *
  * @author linhnguyen
@@ -58,18 +59,25 @@ public class TravelDuration {
         //the Destination address will be passed to this function.
         // This address is for Troy University in Troy.
         // These lines will translate the address to longtitude and latitude.
-        AddrTranslate.addressTranslate("600 University Ave, Troy, AL 36082");
-        destination_lat = AddrTranslate.lat;
+        AddrTranslate dest = new AddrTranslate();
+        
+        dest.addressTranslate("600 University Ave, Troy, AL 36082");
+        destination_lat = dest.getlat();
         System.out.println(destination_lat);
-        destination_lng = AddrTranslate.lng;
+        destination_lng = dest.getlng();
         System.out.println(destination_lng);
         
         //the Origin address.
         //This address is Troy campus in Montgomery.
-        AddrTranslate.addressTranslate("231 Montgomery St, Montgomery, AL 36104");
-        origin_lat = AddrTranslate.lat;
+        AddrTranslate ori = new AddrTranslate();
+        ori.addressTranslate("231 Montgomery St, Montgomery, AL 36104");
+//        These codes below is to connect with the 
+//        setRoute ori = new setRoute();
+//        ori.getStartLocation();
+//        AddrTranslate.addressTranslate(ori);
+        origin_lat = ori.getlat();
         System.out.println(origin_lat);
-        origin_lng = AddrTranslate.lng;
+        origin_lng = ori.getlng();
         System.out.println(origin_lng);
         
         //Preparing to calculate the duration using longtitude and latitude
