@@ -6,20 +6,26 @@
 package smartalarm;
 
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 import org.json.*;
 /**
  *
  * @author linhnguyen
  */
+
 public class TravelDuration {
+    
+    static String key = "AIzaSyCW8qcjq1CGbbRG0ELfkbWZKYqegMPqMN8"; 
+    
     public static void duration (String origin, String destination) throws Exception {
         String s = "http://maps.googleapis.com/maps/api/directions/json?";
-        String key = "AIzaSyCW8qcjq1CGbbRG0ELfkbWZKYqegMPqMN8";
+        
         String a = s +"origin="+origin+"&destination="+destination+"&key"+key;
         
         URL url =  new URL(a);
         
+        //get the json data returned from google
         String str;
         try (Scanner scan = new Scanner(url.openStream())) {
             str = new String();
@@ -27,7 +33,8 @@ public class TravelDuration {
                 str += scan.nextLine();
             }
         }
-//        System.out.println(str);
+        
+        //put data received to an object.
         JSONObject obj = new JSONObject(str);
         if (!obj.getString("status").equals("OK"))
             return;
@@ -44,12 +51,34 @@ public class TravelDuration {
     
     public static void main (String[] args) throws Exception{
 
-        String origin = "Montgomery,AL";
-        String destination = "Troy,AL";
+        Double origin_lat;
+        Double origin_lng;
+        Double destination_lat;
+        Double destination_lng;
+        //the Destination address will be passed to this function.
+        // This address is for Troy University in Troy.
+        // These lines will translate the address to longtitude and latitude.
+        AddrTranslate.addressTranslate("600 University Ave, Troy, AL 36082");
+        destination_lat = AddrTranslate.lat;
+        System.out.println(destination_lat);
+        destination_lng = AddrTranslate.lng;
+        System.out.println(destination_lng);
         
+        //the Origin address.
+        //This address is Troy campus in Montgomery.
+        AddrTranslate.addressTranslate("231 Montgomery St, Montgomery, AL 36104");
+        origin_lat = AddrTranslate.lat;
+        System.out.println(origin_lat);
+        origin_lng = AddrTranslate.lng;
+        System.out.println(origin_lng);
+        
+        //Preparing to calculate the duration using longtitude and latitude
+        String origin = origin_lat+","+origin_lng;
+        System.out.println(origin);
+        String destination = destination_lat+","+destination_lng;
+        
+        //Call the method
         duration(origin,destination);
-        
-        
     }
     
 }
