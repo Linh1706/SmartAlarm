@@ -19,27 +19,38 @@ public class Clock extends javax.swing.JFrame {
     //Default for the snoozetime
     private int snoozetime = 5;
     private int TimetogetReady = 0;
-    private static String StartLocation = "", EndLocation = "Troy University, AL",CityState ="";
-    private ArrayList<Alarm> Alarms = new ArrayList();
+    private static String StartLocation = "", CityState ="";
+    public ArrayList<Alarm> Alarms = new ArrayList();
     private ArrayList<StudentClass> ClassList;
     private ArrayList<Thread> Threads= new ArrayList();
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
     Alarm SnoozeAlarm;
     int currentAlarm =-1;
+    boolean Alarmsound = true;
     
-    Schedule classSchedule = new Schedule();
-    MusicGui  Music = new MusicGui();
-    setRoute RouteSetup = new setRoute();
-    Alarm a = new Alarm();
-    setTimer timer = new setTimer();
-    Snooze snoozeinstance = new Snooze();
-    AlarmListView AList = new AlarmListView(Alarms);
+    Schedule classSchedule;
+    MusicGui  Music;
+    setRoute RouteSetup;
+    Alarm a;
+    setTimer timer;
+    Snooze snoozeinstance;
+    AlarmListView AList;
     
+    //only for testing because we don't need GUI components
+    public Clock(boolean test){
+        
+    }
     public Clock() {
         //Initialize the components in the desgin
         initComponents();
-        
+        classSchedule = new Schedule();
+        Music = new MusicGui();
+        RouteSetup = new setRoute();
+        a = new Alarm();
+        timer = new setTimer();
+        snoozeinstance = new Snooze();
+        AList = new AlarmListView(Alarms);
         //Create action listener for menu items when clicked/selected
         AlarmToneMenuItem.addActionListener(new AddAlarmToneListener());
         newAlarmMenuItem.addActionListener(new newAlarmListener());
@@ -74,67 +85,9 @@ public class Clock extends javax.swing.JFrame {
                     }
                     String time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
                     ClockLabel.setText(time);
-                    String dayofweek ="";
-                    switch(day){
-                        case 1:
-                            SundayLabel.setForeground(Color.green);
-                            dayofweek = "Sunday";
-                            break;
-                        case 2:
-                            MondayLabel.setForeground(Color.green);
-                            dayofweek = "Monday";
-                            break;
-                        case 3:
-                            TuesdayLabel.setForeground(Color.green);
-                            dayofweek = "Tuesday";
-                            break;
-                        case 4:
-                            WednesdayLabel.setForeground(Color.green);
-                            dayofweek = "Wednesday";
-                            break;
-                        case 5:
-                            ThursdayLabel.setForeground(Color.green);
-                            dayofweek = "Thursday";
-                            break;
-                        case 6:
-                            FridayLabel.setForeground(Color.green);
-                            dayofweek = "Friday";
-                            break;
-                        case 7:
-                            SaturdayLabel.setForeground(Color.green);
-                            dayofweek = "Saturday";
-                            break;
-                    }
+                    String dayofweek = getdayofweekstring(day);
+                    checkAlarms(time,dayofweek);
                     
-                    for(int t=0; t< Alarms.size(); t++){
-                        if(time.compareTo(Alarms.get(t).getTime())== 0){
-                            if(Alarms.get(t).getEnabled()){
-                                if(Alarms.get(t).getDays().size() > 1){
-                                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
-                                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
-                                            //sound alarm
-                                        }
-                                    }
-                                }
-                                else{
-                                   if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
-                                       if(currentAlarm != t){
-                                            play.Stop();
-                                            play.Play("nothingatall.mp3");
-                                            SnoozeAlarm = Alarms.get(t).getAlarm();
-                                       }
-                                       if(!Alarms.get(t).getRepeat()){
-                                         Alarms.get(t).setenabled(false);
-                                       }
-                                       else{
-                                           currentAlarm = t;
-                                       }
-                                   }
-                                }
-                            }
-                            
-                        }
-                    }
                 }
             }
         }.start();
@@ -377,11 +330,161 @@ public class Clock extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public String getdayofweekstring(int day){
+        String dayofweek ="";
+                    switch(day){
+                        case 1:
+                            SundayLabel.setForeground(Color.green);
+                            dayofweek = "Sunday";
+                            break;
+                        case 2:
+                            MondayLabel.setForeground(Color.green);
+                            dayofweek = "Monday";
+                            break;
+                        case 3:
+                            TuesdayLabel.setForeground(Color.green);
+                            dayofweek = "Tuesday";
+                            break;
+                        case 4:
+                            WednesdayLabel.setForeground(Color.green);
+                            dayofweek = "Wednesday";
+                            break;
+                        case 5:
+                            ThursdayLabel.setForeground(Color.green);
+                            dayofweek = "Thursday";
+                            break;
+                        case 6:
+                            FridayLabel.setForeground(Color.green);
+                            dayofweek = "Friday";
+                            break;
+                        case 7:
+                            SaturdayLabel.setForeground(Color.green);
+                            dayofweek = "Saturday";
+                            break;
+                    }
+                    return dayofweek;
+    }
     private void DismissButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DismissButtonActionPerformed
         play.Stop();
     }//GEN-LAST:event_DismissButtonActionPerformed
-    
+    private void checkAlarms(String time, String dayofweek){
+        for(int t=0; t< Alarms.size(); t++){
+            if(time.compareTo(Alarms.get(t).getTime())== 0){
+                if(Alarms.get(t).getEnabled()){
+                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                            if(currentAlarm != t){
+                                play.Stop();
+                                play.Play("nothingatall.mp3");
+                                SnoozeAlarm = Alarms.get(t).getAlarm();
+                            }
+                            if(!Alarms.get(t).getRepeat()){
+                              Alarms.get(t).setenabled(false);
+                            }
+                            else{
+                                currentAlarm = t;
+                            } 
+                        }
+                     }
+                }
+            }
+        }
+    }
+    //Duplicate of checkalarms, but for test purposes only
+    public void checkAlarm(String time, String dayofweek){
+        for(int t=0; t< Alarms.size(); t++){
+            if(time.compareTo(Alarms.get(t).getTime())== 0){
+                if(Alarms.get(t).getEnabled()){
+                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                            if(currentAlarm != t){
+                                Alarmsound = true;
+                                /*play.Stop();
+                                play.Play("nothingatall.mp3");
+                                SnoozeAlarm = Alarms.get(t).getAlarm();*/
+                            }
+                            if(!Alarms.get(t).getRepeat()){
+                              Alarms.get(t).setenabled(false);
+                            }
+                            else{
+                                currentAlarm = t;
+                            } 
+                        }
+                        else{
+                         Alarmsound = false;
+                        }
+                     }
+                    if(Alarms.get(t).getDays().isEmpty()){
+                        Alarmsound = false;
+                    }
+                }
+                else{
+                    Alarmsound = false;
+                }
+            }
+            else{
+                Alarmsound = false;
+            }
+        }
+    }
+    private void orderAlarms(){
+      Calendar cal = new GregorianCalendar();
+      int day = cal.get(Calendar.DAY_OF_WEEK);
+      String dayofweek ="";
+                    switch(day){
+                        case 1:
+                            SundayLabel.setForeground(Color.green);
+                            dayofweek = "Sunday";
+                            break;
+                        case 2:
+                            MondayLabel.setForeground(Color.green);
+                            dayofweek = "Monday";
+                            break;
+                        case 3:
+                            TuesdayLabel.setForeground(Color.green);
+                            dayofweek = "Tuesday";
+                            break;
+                        case 4:
+                            WednesdayLabel.setForeground(Color.green);
+                            dayofweek = "Wednesday";
+                            break;
+                        case 5:
+                            ThursdayLabel.setForeground(Color.green);
+                            dayofweek = "Thursday";
+                            break;
+                        case 6:
+                            FridayLabel.setForeground(Color.green);
+                            dayofweek = "Friday";
+                            break;
+                        case 7:
+                            SaturdayLabel.setForeground(Color.green);
+                            dayofweek = "Saturday";
+                            break;
+                    }
+              /*
+               * if dayofweek is equal to alarm day but in separate array to be sorted by time for
+               * notifications.
+               */
+              ArrayList<Alarm> ordered = new ArrayList();
+              for(int a=0; a<Alarms.size();a++){
+                  for(int d=0; d<Alarms.get(a).getDays().size(); d++){
+                     if(dayofweek.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
+                         ordered.add(Alarms.get(a));
+                     } 
+                  }
+              }
+              
+              /*for(int w=1; w<ordered.size(); w++){
+                  Alarm key = ordered.get(w);
+                  String time1= ordered.get(w).getTime();
+                  int i= w-1;
+                  while(i>-1&& ordered.get(i)>key){
+                      
+                  }
+                  
+              }*/
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -565,7 +668,6 @@ private class AddAlarmToneListener implements ActionListener{
                     Alarm newAlarm = a.getAlarm();
                     if(newAlarm.getAlarmName() != null){
                         Alarms.add(newAlarm);
-                        System.out.println(newAlarm.getDays().toString());
                     }
                     a.dispose();
                 }
