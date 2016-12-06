@@ -10,6 +10,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 
@@ -87,10 +88,15 @@ public class Clock extends javax.swing.JFrame {
                     ClockLabel.setText(time);
                     String dayofweek = getdayofweekstring(day);
                     checkAlarms(time,dayofweek);
-                    
+                    orderAlarms(time);
                 }
             }
         }.start();
+        /*new Thread(){
+            public void run(){
+                order
+            }
+        }.start();*/
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -98,7 +104,6 @@ public class Clock extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         ClockLabel = new javax.swing.JLabel();
-        NextEventContentLabel = new javax.swing.JLabel();
         NextEventLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         MondayLabel = new javax.swing.JLabel();
@@ -110,6 +115,8 @@ public class Clock extends javax.swing.JFrame {
         SaturdayLabel = new javax.swing.JLabel();
         SnoozeButton = new javax.swing.JButton();
         DismissButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        NextEventContentArea = new javax.swing.JTextArea();
         jMenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         AlarmToneMenuItem = new javax.swing.JMenuItem();
@@ -225,6 +232,17 @@ public class Clock extends javax.swing.JFrame {
             }
         });
 
+        NextEventContentArea.setEditable(false);
+        NextEventContentArea.setBackground(new java.awt.Color(0, 0, 0));
+        NextEventContentArea.setColumns(20);
+        NextEventContentArea.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        NextEventContentArea.setForeground(new java.awt.Color(255, 255, 255));
+        NextEventContentArea.setLineWrap(true);
+        NextEventContentArea.setRows(5);
+        NextEventContentArea.setWrapStyleWord(true);
+        NextEventContentArea.setBorder(null);
+        jScrollPane1.setViewportView(NextEventContentArea);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -232,16 +250,16 @@ public class Clock extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(NextEventContentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(29, 29, 29))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addComponent(NextEventLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(NextEventLabel))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(ClockLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(88, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -264,8 +282,9 @@ public class Clock extends javax.swing.JFrame {
                     .addComponent(ClockLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(NextEventLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(NextEventContentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -427,62 +446,53 @@ public class Clock extends javax.swing.JFrame {
             }
         }
     }
-    private void orderAlarms(){
+    private void orderAlarms(String time){
       Calendar cal = new GregorianCalendar();
       int day = cal.get(Calendar.DAY_OF_WEEK);
-      String dayofweek ="";
-                    switch(day){
-                        case 1:
-                            SundayLabel.setForeground(Color.green);
-                            dayofweek = "Sunday";
-                            break;
-                        case 2:
-                            MondayLabel.setForeground(Color.green);
-                            dayofweek = "Monday";
-                            break;
-                        case 3:
-                            TuesdayLabel.setForeground(Color.green);
-                            dayofweek = "Tuesday";
-                            break;
-                        case 4:
-                            WednesdayLabel.setForeground(Color.green);
-                            dayofweek = "Wednesday";
-                            break;
-                        case 5:
-                            ThursdayLabel.setForeground(Color.green);
-                            dayofweek = "Thursday";
-                            break;
-                        case 6:
-                            FridayLabel.setForeground(Color.green);
-                            dayofweek = "Friday";
-                            break;
-                        case 7:
-                            SaturdayLabel.setForeground(Color.green);
-                            dayofweek = "Saturday";
-                            break;
-                    }
-              /*
-               * if dayofweek is equal to alarm day but in separate array to be sorted by time for
-               * notifications.
-               */
-              ArrayList<Alarm> ordered = new ArrayList();
-              for(int a=0; a<Alarms.size();a++){
-                  for(int d=0; d<Alarms.get(a).getDays().size(); d++){
-                     if(dayofweek.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
-                         ordered.add(Alarms.get(a));
-                     } 
-                  }
+      String dayofweek =getdayofweekstring(day);
+      /*
+       * if dayofweek is equal to alarm day put in separate array to be sorted by time for
+       * notifications.
+       */
+      if(!Alarms.isEmpty()){
+          ArrayList<Alarm> ordered = new ArrayList();
+          ArrayList<String> Day = new ArrayList();
+          Day.add(dayofweek);
+          Alarm current = new Alarm("current time",Day,time,false,"none");
+          
+          for(int a=0; a<Alarms.size();a++){
+              for(int d=0; d<Alarms.get(a).getDays().size(); d++){
+                 if(dayofweek.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
+                     ordered.add(Alarms.get(a));
+                 } 
               }
-              
-              /*for(int w=1; w<ordered.size(); w++){
-                  Alarm key = ordered.get(w);
-                  String time1= ordered.get(w).getTime();
-                  int i= w-1;
-                  while(i>-1&& ordered.get(i)>key){
-                      
-                  }
-                  
-              }*/
+          }
+          if(!ordered.isEmpty()){
+                ordered.add(current);
+               Collections.sort(ordered, new TimeStringComparator());
+               int index=0;
+               for(int t =0; t<ordered.size(); t++){
+                   //System.out.println(ordered.get(t).getTime());
+                   //if the time for the alarm has passed then go to the next alarm in the list.
+                   if(ordered.get(t).getTime().compareTo(time)==0){
+                       index = t+1;
+                   }
+               }
+               if(index > ordered.size()-1){
+                   NextEventContentArea.setText("No more Alarms Today!");
+               }
+               else{
+                NextEventContentArea.setText("Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime());
+               }
+          }
+          else{
+              NextEventContentArea.setText("No Alarms for today!");
+          }
+      }
+      else{
+          NextEventContentArea.setText("No Alarms have been created!");
+      }
+          
     }
 
     /**
@@ -527,7 +537,7 @@ public class Clock extends javax.swing.JFrame {
     private javax.swing.JMenu FileMenu;
     private javax.swing.JLabel FridayLabel;
     private javax.swing.JLabel MondayLabel;
-    private javax.swing.JLabel NextEventContentLabel;
+    private javax.swing.JTextArea NextEventContentArea;
     private javax.swing.JLabel NextEventLabel;
     private javax.swing.JMenu RouteMenu;
     private javax.swing.JLabel SaturdayLabel;
@@ -543,6 +553,7 @@ public class Clock extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem newAlarmMenuItem;
     private javax.swing.JMenuItem setRouteMenuItem;
     private javax.swing.JMenuItem viewAlarmMenuItem;
@@ -669,6 +680,7 @@ private class AddAlarmToneListener implements ActionListener{
                     if(newAlarm.getAlarmName() != null){
                         Alarms.add(newAlarm);
                     }
+                    //orderAlarms();
                     a.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
