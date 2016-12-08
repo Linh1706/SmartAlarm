@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 
 
@@ -653,7 +655,13 @@ private class AddAlarmToneListener implements ActionListener{
                             Threads.add(threadW);
                             threadW.start();
                             CityState = City;
+                          
+                            
                         }
+                        ScheduledThreadPoolExecutor TravelPool = new ScheduledThreadPoolExecutor(2);
+     
+                        TravelPool.scheduleAtFixedRate(new TravelDuration(StartLocation), 0, 5, TimeUnit.SECONDS);
+
                     }
                     
                     TimetogetReady = RouteSetup.getTimetogetReady();
