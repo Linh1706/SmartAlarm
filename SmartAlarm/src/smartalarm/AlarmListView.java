@@ -181,7 +181,7 @@ public class AlarmListView extends javax.swing.JFrame {
                 Days = D.get(t) + " "+ Days; 
             }
             String stralarm = "Alarm Name: " + alarm.getAlarmName()+ "  Time: " + alarm.getTime()+ " Days: " + Days;
-            String fileinfo = alarm.getAlarmName() + "," + alarm.getTime() + ","+ Days + ","+ alarm.getTone() + "," + alarm.getRepeat() + ","+alarm.getEnabled();
+            String fileinfo = alarm.getAlarmName() + "," + alarm.getTime() + ","+ Days + ","+ alarm.getTone() + "," + alarm.getRepeat() + ","+alarm.getEnabled() +"," + alarm.getNote();
             updatealarms(fileinfo);
             model2.addRow(new Object[]{stralarm, AlarmsR.get(i).getAlarm().getEnabled()});
         }

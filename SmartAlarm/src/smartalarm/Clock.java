@@ -113,6 +113,7 @@ public class Clock extends javax.swing.JFrame {
                 while(true){
                     NextEventContentArea.setText(orderAlarms(time,dayofweek));
                     if(!ClassList.isEmpty() && !StartLocation.isEmpty()){
+                        System.out.println("Here");
                         /*
                          * Calculate the new time.
                          * getready(min) + weather(min) + traffic(seconds). Add to class time and compute new alarm time.
@@ -120,7 +121,7 @@ public class Clock extends javax.swing.JFrame {
                          */
                         //Read the weather file
                         ArrayList<String>weatherp = new ArrayList();
-                        while(weatherp.size() != 2){
+                        while(weatherp.size() != 4){
                             weatherp.clear();
                             try (BufferedReader br = new BufferedReader(new FileReader(new File("WeatherData.txt")))) {
                                 String line;
@@ -183,7 +184,7 @@ public class Clock extends javax.swing.JFrame {
                                 //add new alarms but check to see if alarms already exist
                                 ArrayList<String>Day = new ArrayList();
                                 Day.add(classSchedule.getDayString(ClassList.get(c).getday()));
-                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,"nothingatall.mp3");
+                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,"nothingatall.mp3",Note);
                                 if(!classalarmalreadyexist(newclassAlarm)){
                                     Alarms.add(newclassAlarm);
                                 }
@@ -191,7 +192,7 @@ public class Clock extends javax.swing.JFrame {
                         }
                     }
                     try {
-                        Thread.sleep(20000);
+                        Thread.sleep(5000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -242,7 +243,7 @@ public class Clock extends javax.swing.JFrame {
                         for(int s =0; s< days.length; s++){
                             AlarmDays.add(days[s]);
                         }
-                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),alarminfo[3]);
+                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),alarminfo[3],alarminfo[6]);
                         b.setenabled(Boolean.parseBoolean(alarminfo[5]));
                         Alarms.add(b);
 
@@ -612,7 +613,7 @@ public class Clock extends javax.swing.JFrame {
           ArrayList<Alarm> ordered = new ArrayList();
           ArrayList<String> Day = new ArrayList();
           Day.add(day);
-          Alarm current = new Alarm("current time",Day,time,false,"none");
+          Alarm current = new Alarm("current time",Day,time,false,"none","none");
           
           for(int a=0; a<Alarms.size();a++){
               for(int d=0; d<Alarms.get(a).getDays().size(); d++){
@@ -636,7 +637,8 @@ public class Clock extends javax.swing.JFrame {
                    return "No more Alarms Today!";
                }
                else{
-                 return "Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime();
+                 return "Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime() +
+                         "\nNote: "+ ordered.get(index).getNote();
                }
           }
           else{
@@ -932,7 +934,7 @@ private class AddAlarmToneListener implements ActionListener{
                 newtime = timespots[0] + ":" + String.format("%02d",newmins) + " "+ strmins[1];
             }
             
-            Alarms.add(new Alarm(SnoozeAlarm.getAlarmName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone()));
+            Alarms.add(new Alarm(SnoozeAlarm.getAlarmName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone(), SnoozeAlarm.getNote()));
         }
     }
 }

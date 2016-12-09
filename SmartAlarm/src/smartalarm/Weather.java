@@ -59,31 +59,7 @@ public class Weather implements Runnable{
             Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
         }
      }
-    /* private boolean checkifstringexist(String weatherinfo){
-         String [] weatherstrings = weatherinfo.split(":");
-            try (BufferedReader br = new BufferedReader(new FileReader(weatherdata))) {
-                String line;
-                System.out.println(weatherinfo);
-                while ((line = br.readLine()) != null) {
-                   if(line.contains(weatherstrings[0])){
-                       String linetime = line.substring(line.length()-1);
-                       String weathertime = weatherinfo.substring(weatherinfo.length()-1);
-                       System.out.println(linetime + " "+ weathertime);
-                       line.replaceAll(linetime,weathertime);
-                       return true;
-                   }
-                   else{
-                       return false;
-                   }
-                }
-            
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex){
-           Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
-        }
-          return false;
-     }*/
+    
      public int getWeathertime(){
          int weathertime =-1;
          Pattern p = Pattern.compile("Clear|Sunny"); 

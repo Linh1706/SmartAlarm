@@ -23,6 +23,7 @@ public class Alarm extends javax.swing.JFrame {
     private String Tone;
     private String time;
     private boolean enabled;
+    private String Note;
     
     enum daysofweek{
         Sunday,
@@ -46,13 +47,14 @@ public class Alarm extends javax.swing.JFrame {
         Days = new ArrayList();
     }
     
-    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone){
+    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone, String note){
         this.AlarmName = name;
         Days = new ArrayList(Day);
         this.time = time;
         this.Repeat = R;
         this.Tone = Tone;
         this.enabled =true;
+        this.Note = note;
     }
     
     
@@ -296,6 +298,7 @@ public class Alarm extends javax.swing.JFrame {
                 Tone = "DefaultTone";
             }
             if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
+            Note = "Original time";
             time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
             setVisible(false);
         }
@@ -370,6 +373,9 @@ public class Alarm extends javax.swing.JFrame {
     } 
     public String getAlarmName(){
         return AlarmName;
+    }
+    public String getNote(){
+        return Note;
     }
     public ArrayList<String> getDays(){
         return Days;
