@@ -4,7 +4,12 @@
  */
 package smartalarm;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -20,6 +25,8 @@ public class AlarmListView extends javax.swing.JFrame {
 
     private ArrayList<Alarm> AlarmsR;
     private boolean deleteEnabled;
+    File AlarmFile = new File("AlarmData.txt");
+    
     public AlarmListView(ArrayList<Alarm> Alarms) {
         initComponents();
         AlarmsR = Alarms;
@@ -165,6 +172,7 @@ public class AlarmListView extends javax.swing.JFrame {
     private void ConvertAlarmsForView(){
          TableModel model = jTable1.getModel();
          DefaultTableModel model2 = (DefaultTableModel)model;
+         clearalarmfile();
         for(int i=0; i< AlarmsR.size(); i++){
             Alarm alarm = AlarmsR.get(i).getAlarm();
             ArrayList<String>D = alarm.getDays();
@@ -173,11 +181,34 @@ public class AlarmListView extends javax.swing.JFrame {
                 Days = D.get(t) + " "+ Days; 
             }
             String stralarm = "Alarm Name: " + alarm.getAlarmName()+ "  Time: " + alarm.getTime()+ " Days: " + Days;
+            String fileinfo = alarm.getAlarmName() + "," + alarm.getTime() + ","+ Days + ","+ alarm.getTone() + "," + alarm.getRepeat() + ","+alarm.getEnabled();
+            updatealarms(fileinfo);
             model2.addRow(new Object[]{stralarm, AlarmsR.get(i).getAlarm().getEnabled()});
         }
         jTable1.setModel(model2);
     }
-    
+    private void clearalarmfile(){
+        if(AlarmFile.exists()){
+                  AlarmFile.delete();
+          }
+         try {
+             AlarmFile.createNewFile();
+         } catch (IOException ex) {
+             Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+         }
+    }
+    private void updatealarms(String alarmdata){
+         
+        try { 
+                FileWriter writer = new FileWriter(AlarmFile,true);
+                writer.write(alarmdata+ System.getProperty("line.separator"));
+                writer.flush();
+                writer.close();
+                
+        } catch (IOException ex) {
+            Logger.getLogger(AlarmListView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     }
     
     /**
      * @param args the command line arguments

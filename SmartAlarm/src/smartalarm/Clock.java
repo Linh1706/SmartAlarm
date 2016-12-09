@@ -50,6 +50,7 @@ public class Clock extends javax.swing.JFrame {
     setTimer timer;
     Snooze snoozeinstance;
     AlarmListView AList;
+    String time ="", dayofweek="";
     
     //only for testing because we don't need GUI components
     public Clock(boolean test){
@@ -58,6 +59,7 @@ public class Clock extends javax.swing.JFrame {
     public Clock() {
         //Initialize the components in the desgin
         initComponents();
+        ReadAlarmsFromFile();
         classSchedule = new Schedule();
         Music = new MusicGui();
         RouteSetup = new setRoute();
@@ -75,7 +77,8 @@ public class Clock extends javax.swing.JFrame {
         TimerMenuItem.addActionListener(new TimerListener());
         SnoozeMenuItem.addActionListener(new setSnoozeListener());
         SnoozeButton.addActionListener(new SnoozeListener());
-
+        
+        
         //Thread to always update the time and the day for the clock
         new Thread(){
             public void run(){
@@ -97,19 +100,19 @@ public class Clock extends javax.swing.JFrame {
                     else{
                         night_day = "PM";
                     }
-                    String time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
+                    time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
                     ClockLabel.setText(time);
-                    String dayofweek = getdayofweekstring(day);
+                    dayofweek = getdayofweekstring(day);
                     checkAlarms(time,dayofweek);
-                    orderAlarms(time);
+                    //NextEventContentArea.setText(orderAlarms(time,dayofweek));
                 }
             }
         }.start();
         new Thread(){
             public void run(){
                 while(true){
+                    NextEventContentArea.setText(orderAlarms(time,dayofweek));
                     if(!ClassList.isEmpty() && !StartLocation.isEmpty()){
-                        System.out.println("pass condition");
                         /*
                          * Calculate the new time.
                          * getready(min) + weather(min) + traffic(seconds). Add to class time and compute new alarm time.
@@ -117,20 +120,24 @@ public class Clock extends javax.swing.JFrame {
                          */
                         //Read the weather file
                         ArrayList<String>weatherp = new ArrayList();
-                        try (BufferedReader br = new BufferedReader(new FileReader(new File("WeatherData.txt")))) {
-                            String line;
-                            while ((line = br.readLine()) != null) {
-                                String[] wp=line.split(":");
-                                String newline = wp[1].replace(wp[1].substring(wp[1].length()-1), "");
-                                weatherp.add(newline);
-                                weatherp.add(line.substring(line.length()-1));
-                                
+                        while(weatherp.size() != 2){
+                            weatherp.clear();
+                            try (BufferedReader br = new BufferedReader(new FileReader(new File("WeatherData.txt")))) {
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    String[] wp=line.split(":");
+                                    String newline = wp[1].replace(wp[1].substring(wp[1].length()-1), "");
+                                    weatherp.add(newline);
+                                    weatherp.add(line.substring(line.length()-1));
+
+                                }
+                            }catch (FileNotFoundException ex) {
+                                Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex){
+                               Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        }catch (FileNotFoundException ex) {
-                            Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (IOException ex){
-                           Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        
                         String Note = "";
                         //get the weather string from the start and end locations and compare their time. go with higher time
                         if(weatherp.get(0).contains("Snow") || weatherp.get(2).contains("Snow")){
@@ -153,7 +160,7 @@ public class Clock extends javax.swing.JFrame {
                         
                         String newtimestr = "";
                         //add time to get ready, weather, and traffic here
-                        int extratime = ((TimetogetReady + weather)* 60)*1000;
+                        int extratime = (((TimetogetReady + weather)* 60)/*add traffic seconds here*/)*1000;
                         System.out.println("extra: " + TimetogetReady + " " +weather);
                         for(int c =0; c<ClassList.size(); c++){
                                 System.out.println("Class time: "+ ClassList.get(c).getstarttime());
@@ -184,7 +191,7 @@ public class Clock extends javax.swing.JFrame {
                         }
                     }
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(20000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -222,6 +229,30 @@ public class Clock extends javax.swing.JFrame {
             }
         }
         return alarmmatch;
+    }
+    public void ReadAlarmsFromFile(){
+        File AlarmFile = new File("AlarmData.txt");
+        if(AlarmFile.exists()){
+             try (BufferedReader br = new BufferedReader(new FileReader(AlarmFile))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String []alarminfo = line.split(",");
+                        String [] days = alarminfo[2].split(" ");
+                        ArrayList<String>AlarmDays = new ArrayList();
+                        for(int s =0; s< days.length; s++){
+                            AlarmDays.add(days[s]);
+                        }
+                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),alarminfo[3]);
+                        b.setenabled(Boolean.parseBoolean(alarminfo[5]));
+                        Alarms.add(b);
+
+                    }
+              }catch (FileNotFoundException ex) {
+                    Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex){
+                   Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -572,10 +603,7 @@ public class Clock extends javax.swing.JFrame {
             }
         }
     }
-    private void orderAlarms(String time){
-      Calendar cal = new GregorianCalendar();
-      int day = cal.get(Calendar.DAY_OF_WEEK);
-      String dayofweek =getdayofweekstring(day);
+    private String orderAlarms(String time, String day){
       /*
        * if dayofweek is equal to alarm day put in separate array to be sorted by time for
        * notifications.
@@ -583,12 +611,12 @@ public class Clock extends javax.swing.JFrame {
       if(!Alarms.isEmpty()){
           ArrayList<Alarm> ordered = new ArrayList();
           ArrayList<String> Day = new ArrayList();
-          Day.add(dayofweek);
+          Day.add(day);
           Alarm current = new Alarm("current time",Day,time,false,"none");
           
           for(int a=0; a<Alarms.size();a++){
               for(int d=0; d<Alarms.get(a).getDays().size(); d++){
-                 if(dayofweek.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
+                 if(day.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
                      ordered.add(Alarms.get(a));
                  } 
               }
@@ -605,18 +633,18 @@ public class Clock extends javax.swing.JFrame {
                    }
                }
                if(index > ordered.size()-1){
-                   NextEventContentArea.setText("No more Alarms Today!");
+                   return "No more Alarms Today!";
                }
                else{
-                NextEventContentArea.setText("Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime());
+                 return "Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime();
                }
           }
           else{
-              NextEventContentArea.setText("No Alarms for today!");
+              return "No Alarms for today!";
           }
       }
       else{
-          NextEventContentArea.setText("No Alarms have been created!");
+          return "No Alarms have been created!";
       }
           
     }
