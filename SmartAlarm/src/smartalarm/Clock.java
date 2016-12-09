@@ -8,12 +8,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
@@ -24,7 +35,7 @@ public class Clock extends javax.swing.JFrame {
     private int TimetogetReady = 0;
     private static String StartLocation = "", CityState ="";
     public ArrayList<Alarm> Alarms = new ArrayList();
-    private ArrayList<StudentClass> ClassList;
+    private ArrayList<StudentClass> ClassList = new ArrayList();
     private ArrayList<Thread> Threads= new ArrayList();
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
@@ -94,11 +105,123 @@ public class Clock extends javax.swing.JFrame {
                 }
             }
         }.start();
-        /*new Thread(){
+        new Thread(){
             public void run(){
-                order
+                while(true){
+                    if(!ClassList.isEmpty() && !StartLocation.isEmpty()){
+                        System.out.println("pass condition");
+                        /*
+                         * Calculate the new time.
+                         * getready(min) + weather(min) + traffic(seconds). Add to class time and compute new alarm time.
+                         * Convert all to milliseconds and then divde back out. 
+                         */
+                        //Read the weather file
+                        ArrayList<String>weatherp = new ArrayList();
+                        try (BufferedReader br = new BufferedReader(new FileReader(new File("WeatherData.txt")))) {
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                String[] wp=line.split(":");
+                                String newline = wp[1].replace(wp[1].substring(wp[1].length()-1), "");
+                                weatherp.add(newline);
+                                weatherp.add(line.substring(line.length()-1));
+                                
+                            }
+                        }catch (FileNotFoundException ex) {
+                            Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex){
+                           Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        String Note = "";
+                        //get the weather string from the start and end locations and compare their time. go with higher time
+                        if(weatherp.get(0).contains("Snow") || weatherp.get(2).contains("Snow")){
+                            Note = Note + "\nCheck for School Closures!";
+                        }
+                        int weather = 0;
+                        if(Integer.parseInt(weatherp.get(1)) > Integer.parseInt(weatherp.get(3))){
+                            weather = Integer.parseInt(weatherp.get(1));
+                            if(weather > 0){
+                                Note = Note + "\nWeather is "+weatherp.get(0);
+                            }
+                        }
+                        else{
+                            weather = Integer.parseInt(weatherp.get(3));
+                            if (weather > 0 ){
+                                Note = Note + "\nWeather is "+ weatherp.get(2);
+                            }
+                        }
+                        
+                        
+                        String newtimestr = "";
+                        //add time to get ready, weather, and traffic here
+                        int extratime = ((TimetogetReady + weather)* 60)*1000;
+                        System.out.println("extra: " + TimetogetReady + " " +weather);
+                        for(int c =0; c<ClassList.size(); c++){
+                                System.out.println("Class time: "+ ClassList.get(c).getstarttime());
+                                String [] CLTimes = ClassList.get(c).getstarttime().split(":");
+                                int CLHour = Integer.parseInt(CLTimes[0])* 3600;
+                                int CLMin = Integer.parseInt(CLTimes[1]) * 60;
+                                int newtime = ((CLHour + CLMin) * 1000)- extratime;
+                                //divide back out into hour, min then create alarm
+                                 int hoursL = (int) (( newtime/ 3600000) % 60);
+                                int minutesL = (int) ((newtime / 60000) % 60);
+                                String AM_PM = "";
+                                if(hoursL < 12){
+                                    AM_PM = "AM";
+                                }
+                                else{
+                                    AM_PM = "PM";
+                                }
+                                newtimestr = String.format("%02d",hoursL) + ":" + String.format("%02d",minutesL) + " "+ AM_PM;
+                                System.out.println("new class time: " + newtimestr);
+                                //add new alarms but check to see if alarms already exist
+                                ArrayList<String>Day = new ArrayList();
+                                Day.add(classSchedule.getDayString(ClassList.get(c).getday()));
+                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,"nothingatall.mp3");
+                                if(!classalarmalreadyexist(newclassAlarm)){
+                                    Alarms.add(newclassAlarm);
+                                }
+
+                        }
+                    }
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-        }.start();*/
+        }.start();
+    }
+    public boolean classalarmalreadyexist(Alarm classalarm){
+        boolean alarmmatch = false;
+        for(int a =0; a<Alarms.size(); a++){
+            Alarm listalarm = Alarms.get(a);
+            if(listalarm.getTime().compareToIgnoreCase(classalarm.getTime())==0){
+                if(listalarm.getDays().size() == classalarm.getDays().size()){
+                    int count = listalarm.getDays().size();
+                    int track =0;
+                    for(int d =0; d< count; d++){
+                        if(listalarm.getDays().get(d).compareTo(classalarm.getDays().get(d))==0){
+                            track++;
+                        }  
+                    }
+                    if(track == count){
+                        alarmmatch = true;
+                        break;
+                    }
+                    else{
+                        alarmmatch = false;
+                    }
+                }
+                else{
+                    alarmmatch = false;
+                }
+            }
+            else{
+                alarmmatch = false;
+            }
+        }
+        return alarmmatch;
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -385,6 +508,7 @@ public class Clock extends javax.swing.JFrame {
                     }
                     return dayofweek;
     }
+   
     private void DismissButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DismissButtonActionPerformed
         play.Stop();
     }//GEN-LAST:event_DismissButtonActionPerformed
@@ -596,7 +720,6 @@ private class AddAlarmToneListener implements ActionListener{
                 public void componentHidden(ComponentEvent e) 
                 {
                     ClassList = (ArrayList<StudentClass>) classSchedule.getClassList().clone();
-                    
                     classSchedule.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
