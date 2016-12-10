@@ -5,6 +5,8 @@
  */
 package smartalarm;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
@@ -24,6 +26,7 @@ public class TravelDuration implements Runnable {
     String origin;
     String destination;
     String StartLocation;
+    static int time=0;
     public TravelDuration (String StartLocation){
         this.StartLocation=StartLocation;
     }
@@ -52,7 +55,9 @@ public class TravelDuration implements Runnable {
         //System.out.println(arr);
         //System.out.println(arr.getString("text"));        
         System.out.println("From "+origin+" to "+destination);
-        System.out.println("duration in seconds: "+arr.getInt("value")+ " seconds");
+        time = arr.getInt("value");
+        System.out.println("duration in seconds: "+time+ " seconds");
+        
         System.out.println("duration in minutes: "+arr.getString("text"));
        
     }
@@ -96,6 +101,11 @@ public class TravelDuration implements Runnable {
         
         //Call the method
             duration(origin,destination);
+            String travel_file = "TravelDuration.txt";
+            BufferedWriter bw = new BufferedWriter(new FileWriter(travel_file,false));
+            //System.out.println(time);
+            bw.write(String.valueOf(time));
+            bw.close();
         } catch (Exception ex) {
             Logger.getLogger(TravelDuration.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -26,45 +26,45 @@
 		<elevation>160.0</elevation>
 		</display_location>
 		<observation_location>
-		<full>Fort Rucker / Ozark, Alabama</full>
-		<city>Fort Rucker / Ozark</city>
+		<full>Troy- Goshen suburbs, Troy, Alabama</full>
+		<city>Troy- Goshen suburbs, Troy</city>
 		<state>Alabama</state>
 		<country>US</country>
 		<country_iso3166>US</country_iso3166>
-		<latitude>31.35582924</latitude>
-		<longitude>-85.75110626</longitude>
-		<elevation>243 ft</elevation>
+		<latitude>31.799894</latitude>
+		<longitude>-86.067139</longitude>
+		<elevation>341 ft</elevation>
 		</observation_location>
 		<estimated>
 		</estimated>
-		<station_id>KLOR</station_id>
-		<observation_time>Last Updated on December 7, 4:53 AM CST</observation_time>
-		<observation_time_rfc822>Wed, 07 Dec 2016 04:53:00 -0600</observation_time_rfc822>
-		<observation_epoch>1481107980</observation_epoch>
-		<local_time_rfc822>Thu, 08 Dec 2016 01:01:09 -0600</local_time_rfc822>
-		<local_epoch>1481180469</local_epoch>
+		<station_id>KALTROY8</station_id>
+		<observation_time>Last Updated on December 10, 6:45 AM CST</observation_time>
+		<observation_time_rfc822>Sat, 10 Dec 2016 06:45:40 -0600</observation_time_rfc822>
+		<observation_epoch>1481373940</observation_epoch>
+		<local_time_rfc822>Sat, 10 Dec 2016 06:46:02 -0600</local_time_rfc822>
+		<local_epoch>1481373962</local_epoch>
 		<local_tz_short>CST</local_tz_short>
 		<local_tz_long>America/Chicago</local_tz_long>
 		<local_tz_offset>-0600</local_tz_offset>
 		<weather>Partly Cloudy</weather>
-		<temperature_string>54 F (12 C)</temperature_string>
-		<temp_f>54</temp_f>
-		<temp_c>12</temp_c>
-		<relative_humidity>83%</relative_humidity>
+		<temperature_string>21.2 F (-6.0 C)</temperature_string>
+		<temp_f>21.2</temp_f>
+		<temp_c>-6.0</temp_c>
+		<relative_humidity>90%</relative_humidity>
 		<wind_string>Calm</wind_string>
-		<wind_dir>North</wind_dir>
-		<wind_degrees>0</wind_degrees>
-		<wind_mph>0</wind_mph>
+		<wind_dir>West</wind_dir>
+		<wind_degrees>270</wind_degrees>
+		<wind_mph>0.0</wind_mph>
 		<wind_gust_mph>0</wind_gust_mph>
-		<wind_kph>0</wind_kph>
+		<wind_kph>0.0</wind_kph>
 		<wind_gust_kph>0</wind_gust_kph>
-		<pressure_mb>1016</pressure_mb>
-		<pressure_in>30.01</pressure_in>
+		<pressure_mb>1034</pressure_mb>
+		<pressure_in>30.53</pressure_in>
 		<pressure_trend>0</pressure_trend>
 		
-		<dewpoint_string>49 F (9 C)</dewpoint_string>
-		<dewpoint_f>49</dewpoint_f>
-		<dewpoint_c>9</dewpoint_c>
+		<dewpoint_string>19 F (-7 C)</dewpoint_string>
+		<dewpoint_f>19</dewpoint_f>
+		<dewpoint_c>-7</dewpoint_c>
 		
 		
 		<heat_index_string>NA</heat_index_string>
@@ -72,33 +72,33 @@
 		<heat_index_c>NA</heat_index_c>
 		
 		
-		<windchill_string>NA</windchill_string>
-		<windchill_f>NA</windchill_f>
-		<windchill_c>NA</windchill_c>
+		<windchill_string>21 F (-6 C)</windchill_string>
+		<windchill_f>21</windchill_f>
+		<windchill_c>-6</windchill_c>
 		
-        <feelslike_string>54 F (12 C)</feelslike_string>
-        <feelslike_f>54</feelslike_f>
-        <feelslike_c>12</feelslike_c>
+        <feelslike_string>21 F (-6 C)</feelslike_string>
+        <feelslike_f>21</feelslike_f>
+        <feelslike_c>-6</feelslike_c>
 		<visibility_mi>10.0</visibility_mi>
 		<visibility_km>16.1</visibility_km>
 		<solarradiation></solarradiation>
 		<UV>0</UV>
-		<precip_1hr_string>-9999.00 in (-9999.00 mm)</precip_1hr_string>
-		<precip_1hr_in>-9999.00</precip_1hr_in>
-		<precip_1hr_metric>-9999.00</precip_1hr_metric>
-		<precip_today_string>0.00 in (0.0 mm)</precip_today_string>
+		<precip_1hr_string>-999.00 in ( 0 mm)</precip_1hr_string>
+		<precip_1hr_in>-999.00</precip_1hr_in>
+		<precip_1hr_metric> 0</precip_1hr_metric>
+		<precip_today_string>0.00 in (0 mm)</precip_today_string>
 		<precip_today_in>0.00</precip_today_in>
-		<precip_today_metric>0.0</precip_today_metric>
+		<precip_today_metric>0</precip_today_metric>
 		
 		
 		
 		<icon>partlycloudy</icon>
-		<icon_url>http://icons.wxug.com/i/c/k/nt_partlycloudy.gif</icon_url>
+		<icon_url>http://icons.wxug.com/i/c/k/partlycloudy.gif</icon_url>
 		<forecast_url>http://www.wunderground.com/US/AL/Troy.html</forecast_url>
         
-		<history_url>http://www.wunderground.com/history/airport/KLOR/2016/12/7/DailyHistory.html</history_url>
-		
-		<ob_url>http://www.wunderground.com/cgi-bin/findweather/getForecast?query=31.35582924,-85.75110626</ob_url>
+        <history_url>http://www.wunderground.com/weatherstation/WXDailyHistory.asp?ID=KALTROY8</history_url>
+        
+		<ob_url>http://www.wunderground.com/cgi-bin/findweather/getForecast?query=31.799894,-86.067139</ob_url>
 	</current_observation>
 
 		

@@ -2,7 +2,9 @@
 package smartalarm;
 
 import Mp3Player.MP3Player;
+import Mp3Player.MasterVolume;
 import Mp3Player.MusicGui;
+import Mp3Player.WindowsSound;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -73,8 +75,7 @@ public class Clock extends javax.swing.JFrame {
         TimerMenuItem.addActionListener(new TimerListener());
         SnoozeMenuItem.addActionListener(new setSnoozeListener());
         SnoozeButton.addActionListener(new SnoozeListener());
-        
-        
+           
         //Thread to always update the time and the day for the clock
         new Thread(){
             public void run(){
@@ -175,6 +176,7 @@ public class Clock extends javax.swing.JFrame {
                                 else{
                                     AM_PM = "PM";
                                 }
+                                
                                 newtimestr = String.format("%02d",hoursL) + ":" + String.format("%02d",minutesL) + " "+ AM_PM;
                                 System.out.println("new class time: " + newtimestr);
                                 //add new alarms but check to see if alarms already exist
@@ -551,6 +553,24 @@ public class Clock extends javax.swing.JFrame {
                         if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
                             if(currentAlarm != t){
                                 play.Stop();
+                                String Os = System.getProperty("os.name").toLowerCase();
+                                if (Os.equals("mac os x"))
+                                {
+                                MasterVolume mv = new MasterVolume();
+                                mv.setMasterVolume(5f);
+                                }
+                                else if (Os.contains("windows")){
+
+                                    try {
+                                        try {
+                                            WindowsSound.powershell();
+                                        } catch (InterruptedException ex) {
+                                            Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    } catch (IOException ex) {
+
+                                    }
+                                }
                                 play.Play("nothingatall.mp3");
                                 SnoozeAlarm = Alarms.get(t).getAlarm();
                             }

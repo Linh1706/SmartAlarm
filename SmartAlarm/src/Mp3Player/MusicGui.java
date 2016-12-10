@@ -19,11 +19,13 @@ public final class MusicGui extends javax.swing.JFrame {
     /**
      * Creates new form MusicGui
      */
-    private ArrayList<String> tones = new ArrayList();
+    public static ArrayList<String> tones = new ArrayList();
     MP3Player Player = new MP3Player();
+    PlayList pl = new PlayList();
     public MusicGui() {
-        initComponents();
-        AddTones();
+        initComponents();        
+        pl.readList();
+        pl.default_tone();
         MusicList.setListData(ConvertTones());
     }
 
@@ -154,7 +156,7 @@ public final class MusicGui extends javax.swing.JFrame {
        if(!MusicList.isSelectionEmpty()){
            String musicpath = MusicList.getSelectedValue().toString();
            if(musicpath != null || !musicpath.isEmpty()){
-                Player.Play(musicpath);
+                Player.PlayResume(musicpath);
             }
        }
        else{
@@ -171,6 +173,7 @@ public final class MusicGui extends javax.swing.JFrame {
         int [] deleted = MusicList.getSelectedIndices();
         for(int i =0; i< deleted.length; i++){
             tones.remove(deleted[i]);
+            pl.writeList();
         }
         MusicList.setListData(ConvertTones());
         
@@ -192,7 +195,8 @@ public final class MusicGui extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(jPanel1,"Wrong File Format!","Error",JOptionPane.ERROR_MESSAGE);
         }
         else{
-            tones.add(chosenFile.getName());
+            tones.add(chosenFile.getPath());
+            pl.writeList();
         MusicList.setListData(ConvertTones());
         }
         
@@ -200,6 +204,7 @@ public final class MusicGui extends javax.swing.JFrame {
     }//GEN-LAST:event_UploadButtonActionPerformed
     public void AddTones(){
         tones.add("nothingatall.mp3");
+        pl.writeList();
     }
     private String [] ConvertTones(){
         String [] tonescontainer = new String [tones.size()];
