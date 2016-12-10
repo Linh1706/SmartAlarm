@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import Mp3Player.MusicGui;
 
+
 /**
  *
  * @author linhnguyen
@@ -33,7 +34,8 @@ public class PlayList {
                 //PrintWriter pw = new PrintWriter(bw);
                 for (int i=0;i<MusicGui.tones.size();i++)
                 {
-                    bw.write(MusicGui.tones.get(i).toString()+"\n");
+                    bw.write(MusicGui.tones.get(i).toString());
+                    bw.newLine();
                 }
                 bw.close();
             } catch (IOException ex) {
@@ -50,6 +52,9 @@ public class PlayList {
         
         while ((line=rl.readLine())!=null){
             MusicGui.tones.add(line);
+            //String [] song_name = line.split("\\");
+            Path p = Paths.get(line);
+            MusicGui.tone_name.add(p.getFileName().toString());
         }
         }
         catch (IOException ex){
@@ -61,13 +66,14 @@ public class PlayList {
         int counter=0;
         for (int i=0;i<MusicGui.tones.size();i++){
             
-            if (MusicGui.tones.get(i)=="nothingatall.mp3"){
+            if (MusicGui.tones.get(i).equals("nothingatall.mp3")){
                 counter++;
             }
             
         }
         if (counter==0){
             MusicGui.tones.add("nothingatall.mp3");
+            MusicGui.tone_name.add("nothingatall.mp3");
         }
     }
     
