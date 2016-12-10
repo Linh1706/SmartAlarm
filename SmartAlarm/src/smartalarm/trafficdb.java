@@ -10,5 +10,21 @@ package smartalarm;
  * @author thapa
  */
 public class trafficdb {
+    private int traffic_id;
+    private String route;
+    
+    public trafficdb(int traffic_id, String route){
+        this.traffic_id=traffic_id;
+        this.route=route;
+        
+    }
+    
+    public int gettrafId(){
+        return traffic_id;
+    }
+    
+    public String getroute(){
+        return route;
+    }
     
 }
