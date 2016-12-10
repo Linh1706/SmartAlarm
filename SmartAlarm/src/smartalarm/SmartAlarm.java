@@ -9,13 +9,25 @@ package smartalarm;
  *
  * @author Linh
  */
+
+//edited by sailuja
+//import java.sql.SQLException;
+//import java.util.ArrayList;
+
+
 public class SmartAlarm {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        // Added by Sailuja
+        connector dbhandler = new connector("root","","db_alarm");
+        
+        //to insert tone into table
+        tone t = new tone(4,"second","url of music file here");
+        dbhandler.insert(t);
     }
     
 }
