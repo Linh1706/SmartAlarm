@@ -10,6 +10,7 @@ package smartalarm;
  * @author thapa
  */
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
@@ -39,7 +40,8 @@ public connector(String DBUserName, String DBPassword, String db_alarm){
 //public static void main (String[] args) {
 private void connect(){
     try{
-      Connection conn = DriverManager.getConnection( url, DBUserName, DBPassword);
+      conn = DriverManager.getConnection( url, DBUserName, DBPassword);
+      stmt = conn.createStatement();
       if (conn != null){
           System.out.println("Connected to the database");
       }
@@ -61,8 +63,9 @@ private void connect(){
      * @return
      */
     public boolean insert(tone t){
-        String query = "INSERT INTO table VALUES ('"+t.getId()+"','"+t.getName()+"','"+t.getURL()+"');";
+        String query = "INSERT INTO tbl_tone (tone_name, tone_url) VALUES ('"+t.getName()+"','"+t.getURL()+"');";
         try{
+            
             stmt.execute(query);
             
         }
@@ -71,6 +74,43 @@ private void connect(){
         }
     return true;
     }
+    
+    //insert location
+    
+    public boolean insert(location l){
+        String query = "INSERT INTO tbl_location (current_loc, dest_loc) VALUES ("+l.getcname()+"','"+l.getdestloc()+"');";
+        try{
+            stmt.execute(query);
+        }
+        catch (SQLException e){
+            return false;
+        }
+        return true;
+    }
+    
+    //insert traffic data
+    public boolean insert(trafficdb traff){
+        String query = "INSERT INTO tbl_traffic (route) VALUES ("+traff.getroute()+");";
+        try{
+                stmt.execute(query);
+        }
+        catch (SQLException e){
+            return false;
+        }
+        return true;
+    }
+    //insert weather
+    public boolean insert(weatherdb w){
+        String query = "INSERT INTO tbl_weather (weather_uptodate) VALUES ('"+w.getweatherup()+"'); ";
+        try{
+            stmt.execute(query);
+        }
+        catch (SQLException e){
+            return false;
+        }
+        return true;
+    }
+    
     
     
 }

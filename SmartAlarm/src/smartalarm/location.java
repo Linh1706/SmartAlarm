@@ -13,7 +13,7 @@ public class location {
     private int loc_id;
     private String current_loc;
     private String dest_loc;
-        
+    
     //constructor to set private variable
     public location(int loc_id, String current_loc, String dest_loc){
             this.current_loc=current_loc;
@@ -22,15 +22,17 @@ public class location {
     }
     
     //getters to access the private variables
-    public int getId(){ 
+    public int getlocId(){ 
         return loc_id;
     }
-    public String getName(){
+    public String getcname(){
         return current_loc;
     }
-    public String getURL(){
+    public String getdestloc(){
         return dest_loc;
     }
+   
+    
    
     
     
