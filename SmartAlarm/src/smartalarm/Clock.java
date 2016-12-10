@@ -135,7 +135,7 @@ public class Clock extends javax.swing.JFrame {
                             }
                         }
                         
-                        String Note = "";
+                        String Note = "original time";
                         //get the weather string from the start and end locations and compare their time. go with higher time
                         if(weatherp.get(0).contains("Snow") || weatherp.get(2).contains("Snow")){
                             Note = Note + "\nCheck for School Closures!";
@@ -234,6 +234,9 @@ public class Clock extends javax.swing.JFrame {
                     String line;
                     while ((line = br.readLine()) != null) {
                         String []alarminfo = line.split(",");
+                        /*for(int q=0; q<alarminfo.length; q++){
+                            System.out.println(alarminfo[q]);
+                        }*/
                         String [] days = alarminfo[2].split(" ");
                         ArrayList<String>AlarmDays = new ArrayList();
                         for(int s =0; s< days.length; s++){
