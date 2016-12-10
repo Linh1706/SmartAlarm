@@ -51,6 +51,7 @@ public class PlayList {
         while ((line=rl.readLine())!=null){
             MusicGui.tones.add(line);
         }
+        rl.close();
         }
         catch (IOException ex){
             
