@@ -56,6 +56,7 @@ public class PlayList {
             Path p = Paths.get(line);
             MusicGui.tone_name.add(p.getFileName().toString());
         }
+        rl.close();
         }
         catch (IOException ex){
             
