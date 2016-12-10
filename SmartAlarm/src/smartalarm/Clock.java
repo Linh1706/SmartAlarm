@@ -2,17 +2,22 @@
 package smartalarm;
 
 import Mp3Player.MP3Player;
+import Mp3Player.MasterVolume;
 import Mp3Player.MusicGui;
+import Mp3Player.WindowsSound;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 
@@ -122,6 +127,20 @@ public class Clock extends javax.swing.JFrame {
                                    if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
                                        if(currentAlarm != t){
                                             play.Stop();
+                                            String Os = System.getProperty("os.name").toLowerCase();
+                                            if (Os.equals("mac os x"))
+                                            {
+                                            MasterVolume mv = new MasterVolume();
+                                            mv.setMasterVolume(5f);
+                                            }
+                                            else if (Os.equals("windows 10")){
+                                                
+                                                try {
+                                                    WindowsSound.powershell();
+                                                } catch (IOException ex) {
+                                                    
+                                                }
+                                            }
                                             play.Play("nothingatall.mp3");
                                             SnoozeAlarm = Alarms.get(t).getAlarm();
                                        }
