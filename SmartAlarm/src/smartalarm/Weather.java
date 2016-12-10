@@ -4,16 +4,21 @@
  */
 package smartalarm;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,15 +40,68 @@ import org.xml.sax.SAXException;
  */
 public class Weather implements Runnable{
      File weather = new File("Weather.xml");
-     String weatherstring= "";
+     File weatherdata = new File("WeatherData.txt");
+     private static String weatherstring= "";
      String [] weatherlocations;
      
      public Weather(String StartLocation){
          weatherlocations = new String[]{StartLocation,"Troy,AL"};
      }
+     private void storedweatherdata(String weatherinfo){
+         
+        try { 
+                FileWriter writer = new FileWriter(weatherdata,true);
+                writer.write(weatherinfo+ System.getProperty("line.separator"));
+                writer.flush();
+                writer.close();
+                
+        } catch (IOException ex) {
+            Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     }
+    
+     public int getWeathertime(){
+         int weathertime =-1;
+         Pattern p = Pattern.compile("Clear|Sunny"); 
+         Matcher m = p.matcher(weatherstring);
+         if(m.find()){
+             weathertime=0;
+         }
+         p = Pattern.compile("Rain.|Overcast");
+         m = p.matcher(weatherstring);
+         if(m.find()){
+             weathertime=10;
+         }
+         p = Pattern.compile("Snow.|Ice|Hail|Sleet|Freezing Rain");
+         m = p.matcher(weatherstring);
+         if(m.find()){
+             weathertime=20;
+         }
+         p = Pattern.compile("Cloud.|Fog");
+         m = p.matcher(weatherstring);
+         if(m.find()){
+             weathertime =5;
+         }
+         p = Pattern.compile("Strom");
+         m = p.matcher(weatherstring);
+         if(m.find()){
+             weathertime = 15;
+         }
+         
+         
+         return weathertime;
+     }
      
      public void run() {
          while(!Thread.interrupted()){
+             if(weatherdata.exists()){
+                  weatherdata.delete();
+              }
+             try {
+                 weatherdata.createNewFile();
+             } catch (IOException ex) {
+                 Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+             }
            for(int w=0; w<weatherlocations.length;w++){
          //Build the URI template to pass to the API
                 URI uri;
@@ -82,8 +140,11 @@ public class Weather implements Runnable{
                                     else{
                                         Node wea = observations.item(0);
                                         weatherstring = wea.getTextContent();
+                                        int time = getWeathertime();
+                                        
                                         //UNCOMMENT TO TEST WEATHER 
-                                        //System.out.println(weatherlocations[w]+ ": "+ weatherstring);
+                                        //System.out.println(weatherlocations[w]+ ": "+ weatherstring + " "+ time );
+                                        storedweatherdata(weatherlocations[w]+ ": "+ weatherstring + " "+ time);
                                         //To be written to the database
                                     }
                                     
@@ -95,6 +156,11 @@ public class Weather implements Runnable{
                     System.out.print("failed " + ex.toString());
                     Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
                  }
+               try{
+                    Thread.sleep(3000);
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().stop();
+                }
            }
            try{
              Thread.sleep(1800000);

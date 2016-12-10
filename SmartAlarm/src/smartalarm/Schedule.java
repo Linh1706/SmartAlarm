@@ -320,7 +320,7 @@ public class Schedule extends javax.swing.JFrame {
         return classtrings;
     }
     
-    private String getDayString(int day){
+    public String getDayString(int day){
         String daystr = null;
         switch(day){
                         case 0:
@@ -357,12 +357,14 @@ public class Schedule extends javax.swing.JFrame {
             return false;
         }
     }
-    
     //method to see if the class is already added to the class list
     private boolean ClassAdded(StudentClass A){
         for(int t =0; t< Classes.size(); t++){
             if(classmatch(A, Classes.get(t))){
                 return true;
+            }
+            else{
+                
             }
         }
         return false;

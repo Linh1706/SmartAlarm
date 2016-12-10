@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 
@@ -21,6 +23,17 @@ public class Alarm extends javax.swing.JFrame {
     private String Tone;
     private String time;
     private boolean enabled;
+    private String Note;
+    
+    enum daysofweek{
+        Sunday,
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday
+    }
     
     public Alarm() {
         initComponents();
@@ -34,15 +47,17 @@ public class Alarm extends javax.swing.JFrame {
         Days = new ArrayList();
     }
     
-    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone){
+    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone, String note){
         this.AlarmName = name;
         Days = new ArrayList(Day);
         this.time = time;
         this.Repeat = R;
         this.Tone = Tone;
         this.enabled =true;
+        this.Note = note;
     }
-
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -266,9 +281,15 @@ public class Alarm extends javax.swing.JFrame {
              JOptionPane.showMessageDialog(jPanel1,"Please select a day!","Error",JOptionPane.ERROR_MESSAGE);
         }
         else{
+            if(Days.size()>1){
+                JOptionPane.showMessageDialog(jPanel1,"Repeat auto selected because more than one day selected!","Warning",JOptionPane.WARNING_MESSAGE);
+                Repeat = true;
+            }
+            else{
+               Repeat = RepeatCheckBox.isSelected(); 
+            }
             AlarmName = NameTextField.getText();
-            if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
-            Repeat = RepeatCheckBox.isSelected();
+            if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm"; 
             enabled = true;
             if(AlarmToneBox.getSelectedItem() != null){
                 Tone = AlarmToneBox.getSelectedItem().toString();
@@ -277,11 +298,12 @@ public class Alarm extends javax.swing.JFrame {
                 Tone = "DefaultTone";
             }
             if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
+            Note = "Original time";
             time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
             setVisible(false);
         }
     }//GEN-LAST:event_SaveButtonActionPerformed
-
+    
     public void defaultvalues(){
         NameTextField.setText("");
         RepeatCheckBox.setSelected(false);
@@ -322,7 +344,6 @@ public class Alarm extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent e) {
            if (Button.isSelected()){
                 Button.setForeground(Color.GREEN);
-                System.out.println(Day);
                 Days.add(Day);
             } else {
                 Button.setForeground(Color.BLACK);
@@ -352,6 +373,9 @@ public class Alarm extends javax.swing.JFrame {
     } 
     public String getAlarmName(){
         return AlarmName;
+    }
+    public String getNote(){
+        return Note;
     }
     public ArrayList<String> getDays(){
         return Days;
