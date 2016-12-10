@@ -133,10 +133,14 @@ public class Clock extends javax.swing.JFrame {
                                             MasterVolume mv = new MasterVolume();
                                             mv.setMasterVolume(5f);
                                             }
-                                            else if (Os.equals("windows 10")){
+                                            else if (Os.contains("windows")){
                                                 
                                                 try {
-                                                    WindowsSound.powershell();
+                                                    try {
+                                                        WindowsSound.powershell();
+                                                    } catch (InterruptedException ex) {
+                                                        Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
+                                                    }
                                                 } catch (IOException ex) {
                                                     
                                                 }

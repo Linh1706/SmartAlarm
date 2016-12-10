@@ -8,7 +8,11 @@ package Mp3Player;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,31 +20,53 @@ import java.util.ArrayList;
  */
 public class WindowsSound {
     
-    public static void powershell() throws IOException{
+    public static void powershell() throws IOException, InterruptedException {
         String psfile = "pshell.txt";
         String line;
-        String pscode="";
+        String pscode="\n";
+       
         BufferedReader br = new BufferedReader(new FileReader(psfile));
         
         while((line=br.readLine())!=null){
-            pscode+=br.readLine();
+            pscode+=(br.readLine()+"\n");
         }
-                
+        br.close();
+      
+        
+        
+        System.out.print(pscode);
+        //System.out.println();
+        String unmute = "[audio]::Mute=$false";
+        String Vol_value = "[audio]::Volume=0.8"; // Set value from 0.0 - 1.0
+        
+       final Process p = Runtime.getRuntime().exec("powershell.exe");
+       new Thread(new SyncPipe(p.getErrorStream(), System.err)).start();
+       new Thread(new SyncPipe(p.getInputStream(), System.out)).start();
+       PrintWriter commands = new PrintWriter(p.getOutputStream(),true);
+       commands.println("Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted");
+       //commands.println("A");
+       commands.println("./pshell.ps1");
+       commands.println("Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Restricted");
+       commands.flush();
+       //commands.println(unmute);
+       //commands.println(Vol_value);
        
-        
-        String unmute = "[audio]::Mute = $false";
-        String Vol_value = "[audio]::Volume  = 0.8"; // Set value from 0.0 - 1.0
-        
-        String[] ps = {"powershell.exe",pscode,unmute,Vol_value};
-        ProcessBuilder pb = new ProcessBuilder(ps);
-        Process p = pb.start();
+       commands.close();
+       int returnCode = p.waitFor();
+       System.out.println(returnCode);
     }
     
     
     
-//    public static void main(String[] args) throws IOException{
-//        //String a = powershell();
-//        System.out.println(powershell());
-//    }
+    public static void main(String[] args) {
+        try {
+            //String a = powershell();
+            powershell();
+        } catch (IOException ex) {
+            
+        } catch (InterruptedException ex) {
+            
+        }
+    }
     
 }

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 [Guid("5CDF2C82-841E-4546-9722-0CF74078229A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 interface IAudioEndpointVolume
 {
-    // f(), g(), ... are unused COM method slots. Define these if you care
     int f(); int g(); int h(); int i();
     int SetMasterVolumeLevelScalar(float fLevel, System.Guid pguidEventContext);
     int j();

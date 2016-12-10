@@ -3,6 +3,10 @@ package Mp3Player;
 //All code is added to create the widget. Follow the "Create a Widget" tutorial if you want to know how I did it.
 
 import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import Mp3Player.WindowsSound;
 
 public class MP3PlayerGUI extends javax.swing.JDialog 
 {
@@ -105,9 +109,18 @@ public class MP3PlayerGUI extends javax.swing.JDialog
     }//GEN-LAST:event_BackgroundMousePressed
 
     private void PlayMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PlayMouseReleased
-        // TODO add your handling code here:
-        MC.Stop2();
-        MC.PlayResume("nothingatall.mp3");
+        try {
+            try {
+                // TODO add your handling code here:
+                WindowsSound.powershell();
+            } catch (InterruptedException ex) {
+                
+            }
+            MC.Stop2();
+            MC.PlayResume("nothingatall.mp3");
+        } catch (IOException ex) {
+            Logger.getLogger(MP3PlayerGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_PlayMouseReleased
 
