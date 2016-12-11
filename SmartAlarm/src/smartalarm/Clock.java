@@ -10,9 +10,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -26,27 +31,40 @@ public class Clock extends javax.swing.JFrame {
     //Default for the snoozetime
     private int snoozetime = 5;
     private int TimetogetReady = 0;
-    private static String StartLocation = "", EndLocation = "Troy University, AL",CityState ="";
-    private ArrayList<Alarm> Alarms = new ArrayList();
-    private ArrayList<StudentClass> ClassList;
+    private static String StartLocation = "", CityState ="";
+    public ArrayList<Alarm> Alarms = new ArrayList();
+    private ArrayList<StudentClass> ClassList = new ArrayList();
     private ArrayList<Thread> Threads= new ArrayList();
     MP3Player play = new MP3Player();
     boolean snoozeactive =false;
     Alarm SnoozeAlarm;
     int currentAlarm =-1;
+    boolean Alarmsound = true;
     
-    Schedule classSchedule = new Schedule();
-    MusicGui  Music = new MusicGui();
-    setRoute RouteSetup = new setRoute();
-    Alarm a = new Alarm();
-    setTimer timer = new setTimer();
-    Snooze snoozeinstance = new Snooze();
-    AlarmListView AList = new AlarmListView(Alarms);
+    Schedule classSchedule;
+    MusicGui  Music;
+    setRoute RouteSetup;
+    Alarm a;
+    setTimer timer;
+    Snooze snoozeinstance;
+    AlarmListView AList;
+    String time ="", dayofweek="";
     
+    //only for testing because we don't need GUI components
+    public Clock(boolean test){
+        
+    }
     public Clock() {
         //Initialize the components in the desgin
         initComponents();
-        
+        ReadAlarmsFromFile();
+        classSchedule = new Schedule();
+        Music = new MusicGui();
+        RouteSetup = new setRoute();
+        a = new Alarm();
+        timer = new setTimer();
+        snoozeinstance = new Snooze();
+        AList = new AlarmListView(Alarms);
         //Create action listener for menu items when clicked/selected
         AlarmToneMenuItem.addActionListener(new AddAlarmToneListener());
         newAlarmMenuItem.addActionListener(new newAlarmListener());
@@ -57,7 +75,7 @@ public class Clock extends javax.swing.JFrame {
         TimerMenuItem.addActionListener(new TimerListener());
         SnoozeMenuItem.addActionListener(new setSnoozeListener());
         SnoozeButton.addActionListener(new SnoozeListener());
-
+           
         //Thread to always update the time and the day for the clock
         new Thread(){
             public void run(){
@@ -79,90 +97,164 @@ public class Clock extends javax.swing.JFrame {
                     else{
                         night_day = "PM";
                     }
-                    String time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
+                    time = String.format("%02d",hour) + ":" + String.format("%02d",minute) + " " + night_day;
                     ClockLabel.setText(time);
-                    String dayofweek ="";
-                    switch(day){
-                        case 1:
-                            SundayLabel.setForeground(Color.green);
-                            dayofweek = "Sunday";
-                            break;
-                        case 2:
-                            MondayLabel.setForeground(Color.green);
-                            dayofweek = "Monday";
-                            break;
-                        case 3:
-                            TuesdayLabel.setForeground(Color.green);
-                            dayofweek = "Tuesday";
-                            break;
-                        case 4:
-                            WednesdayLabel.setForeground(Color.green);
-                            dayofweek = "Wednesday";
-                            break;
-                        case 5:
-                            ThursdayLabel.setForeground(Color.green);
-                            dayofweek = "Thursday";
-                            break;
-                        case 6:
-                            FridayLabel.setForeground(Color.green);
-                            dayofweek = "Friday";
-                            break;
-                        case 7:
-                            SaturdayLabel.setForeground(Color.green);
-                            dayofweek = "Saturday";
-                            break;
-                    }
-                    
-                    for(int t=0; t< Alarms.size(); t++){
-                        if(time.compareTo(Alarms.get(t).getTime())== 0){
-                            if(Alarms.get(t).getEnabled()){
-                                if(Alarms.get(t).getDays().size() > 1){
-                                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
-                                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
-                                            //sound alarm
-                                        }
-                                    }
+                    dayofweek = getdayofweekstring(day);
+                    checkAlarms(time,dayofweek);
+                    //NextEventContentArea.setText(orderAlarms(time,dayofweek));
+                }
+            }
+        }.start();
+        new Thread(){
+            public void run(){
+                while(true){
+                    NextEventContentArea.setText(orderAlarms(time,dayofweek));
+                    if(!ClassList.isEmpty() && !StartLocation.isEmpty()){
+                        System.out.println("Here");
+                        /*
+                         * Calculate the new time.
+                         * getready(min) + weather(min) + traffic(seconds). Add to class time and compute new alarm time.
+                         * Convert all to milliseconds and then divde back out. 
+                         */
+                        //Read the weather file
+                        ArrayList<String>weatherp = new ArrayList();
+                        while(weatherp.size() != 4){
+                            weatherp.clear();
+                            try (BufferedReader br = new BufferedReader(new FileReader(new File("WeatherData.txt")))) {
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    String[] wp=line.split(":");
+                                    String newline = wp[1].replace(wp[1].substring(wp[1].length()-1), "");
+                                    weatherp.add(newline);
+                                    weatherp.add(line.substring(line.length()-1));
+
+                                }
+                            }catch (FileNotFoundException ex) {
+                                Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex){
+                               Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        
+                        String Note = "original time";
+                        //get the weather string from the start and end locations and compare their time. go with higher time
+                        if(weatherp.get(0).contains("Snow") || weatherp.get(2).contains("Snow")){
+                            Note = Note + "\nCheck for School Closures!";
+                        }
+                        int weather = 0;
+                        if(Integer.parseInt(weatherp.get(1)) > Integer.parseInt(weatherp.get(3))){
+                            weather = Integer.parseInt(weatherp.get(1));
+                            if(weather > 0){
+                                Note = Note + "\nWeather is "+weatherp.get(0);
+                            }
+                        }
+                        else{
+                            weather = Integer.parseInt(weatherp.get(3));
+                            if (weather > 0 ){
+                                Note = Note + "\nWeather is "+ weatherp.get(2);
+                            }
+                        }
+                        
+                        
+                        String newtimestr = "";
+                        //add time to get ready, weather, and traffic here
+                        int extratime = (((TimetogetReady + weather)* 60)/*add traffic seconds here*/)*1000;
+                        System.out.println("extra: " + TimetogetReady + " " +weather);
+                        for(int c =0; c<ClassList.size(); c++){
+                                System.out.println("Class time: "+ ClassList.get(c).getstarttime());
+                                String [] CLTimes = ClassList.get(c).getstarttime().split(":");
+                                int CLHour = Integer.parseInt(CLTimes[0])* 3600;
+                                int CLMin = Integer.parseInt(CLTimes[1]) * 60;
+                                int newtime = ((CLHour + CLMin) * 1000)- extratime;
+                                //divide back out into hour, min then create alarm
+                                 int hoursL = (int) (( newtime/ 3600000) % 60);
+                                int minutesL = (int) ((newtime / 60000) % 60);
+                                String AM_PM = "";
+                                if(hoursL < 12){
+                                    AM_PM = "AM";
                                 }
                                 else{
-                                   if(dayofweek.compareTo(Alarms.get(t).getDays().get(0))==0){
-                                       if(currentAlarm != t){
-                                            play.Stop();
-                                            String Os = System.getProperty("os.name").toLowerCase();
-                                            if (Os.equals("mac os x"))
-                                            {
-                                            MasterVolume mv = new MasterVolume();
-                                            mv.setMasterVolume(5f);
-                                            }
-                                            else if (Os.contains("windows")){
-                                                
-                                                try {
-                                                    try {
-                                                        WindowsSound.powershell();
-                                                    } catch (InterruptedException ex) {
-                                                        Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
-                                                    }
-                                                } catch (IOException ex) {
-                                                    
-                                                }
-                                            }
-                                            play.Play("nothingatall.mp3");
-                                            SnoozeAlarm = Alarms.get(t).getAlarm();
-                                       }
-                                       if(!Alarms.get(t).getRepeat()){
-                                         Alarms.get(t).setenabled(false);
-                                       }
-                                       else{
-                                           currentAlarm = t;
-                                       }
-                                   }
+                                    AM_PM = "PM";
                                 }
-                            }
-                            
+                                
+                                newtimestr = String.format("%02d",hoursL) + ":" + String.format("%02d",minutesL) + " "+ AM_PM;
+                                System.out.println("new class time: " + newtimestr);
+                                //add new alarms but check to see if alarms already exist
+                                ArrayList<String>Day = new ArrayList();
+                                Day.add(classSchedule.getDayString(ClassList.get(c).getday()));
+                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,0,Note);
+                                if(!classalarmalreadyexist(newclassAlarm)){
+                                    Alarms.add(newclassAlarm);
+                                }
+
                         }
+                    }
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
         }.start();
+    }
+    public boolean classalarmalreadyexist(Alarm classalarm){
+        boolean alarmmatch = false;
+        for(int a =0; a<Alarms.size(); a++){
+            Alarm listalarm = Alarms.get(a);
+            if(listalarm.getTime().compareToIgnoreCase(classalarm.getTime())==0){
+                if(listalarm.getDays().size() == classalarm.getDays().size()){
+                    int count = listalarm.getDays().size();
+                    int track =0;
+                    for(int d =0; d< count; d++){
+                        if(listalarm.getDays().get(d).compareTo(classalarm.getDays().get(d))==0){
+                            track++;
+                        }  
+                    }
+                    if(track == count){
+                        alarmmatch = true;
+                        break;
+                    }
+                    else{
+                        alarmmatch = false;
+                    }
+                }
+                else{
+                    alarmmatch = false;
+                }
+            }
+            else{
+                alarmmatch = false;
+            }
+        }
+        return alarmmatch;
+    }
+    public void ReadAlarmsFromFile(){
+        File AlarmFile = new File("AlarmData.txt");
+        if(AlarmFile.exists()){
+             try (BufferedReader br = new BufferedReader(new FileReader(AlarmFile))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String []alarminfo = line.split(",");
+                        /*for(int q=0; q<alarminfo.length; q++){
+                            System.out.println(alarminfo[q]);
+                        }*/
+                        String [] days = alarminfo[2].split(" ");
+                        ArrayList<String>AlarmDays = new ArrayList();
+                        for(int s =0; s< days.length; s++){
+                            AlarmDays.add(days[s]);
+                        }
+                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),Integer.parseInt(alarminfo[3]),alarminfo[6]);
+                        b.setenabled(Boolean.parseBoolean(alarminfo[5]));
+                        Alarms.add(b);
+
+                    }
+              }catch (FileNotFoundException ex) {
+                    Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex){
+                   Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                }
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -170,7 +262,6 @@ public class Clock extends javax.swing.JFrame {
 
         jPanel2 = new javax.swing.JPanel();
         ClockLabel = new javax.swing.JLabel();
-        NextEventContentLabel = new javax.swing.JLabel();
         NextEventLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         MondayLabel = new javax.swing.JLabel();
@@ -182,6 +273,8 @@ public class Clock extends javax.swing.JFrame {
         SaturdayLabel = new javax.swing.JLabel();
         SnoozeButton = new javax.swing.JButton();
         DismissButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        NextEventContentArea = new javax.swing.JTextArea();
         jMenuBar = new javax.swing.JMenuBar();
         FileMenu = new javax.swing.JMenu();
         AlarmToneMenuItem = new javax.swing.JMenuItem();
@@ -297,6 +390,17 @@ public class Clock extends javax.swing.JFrame {
             }
         });
 
+        NextEventContentArea.setEditable(false);
+        NextEventContentArea.setBackground(new java.awt.Color(0, 0, 0));
+        NextEventContentArea.setColumns(20);
+        NextEventContentArea.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        NextEventContentArea.setForeground(new java.awt.Color(255, 255, 255));
+        NextEventContentArea.setLineWrap(true);
+        NextEventContentArea.setRows(5);
+        NextEventContentArea.setWrapStyleWord(true);
+        NextEventContentArea.setBorder(null);
+        jScrollPane1.setViewportView(NextEventContentArea);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -304,16 +408,16 @@ public class Clock extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(NextEventContentLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(29, 29, 29))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addComponent(NextEventLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(NextEventLabel))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(ClockLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(88, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -336,8 +440,9 @@ public class Clock extends javax.swing.JFrame {
                     .addComponent(ClockLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(NextEventLabel)
-                        .addGap(18, 18, 18)
-                        .addComponent(NextEventContentLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(27, Short.MAX_VALUE))
@@ -402,11 +507,169 @@ public class Clock extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public String getdayofweekstring(int day){
+        String dayofweek ="";
+                    switch(day){
+                        case 1:
+                            SundayLabel.setForeground(Color.green);
+                            dayofweek = "Sunday";
+                            break;
+                        case 2:
+                            MondayLabel.setForeground(Color.green);
+                            dayofweek = "Monday";
+                            break;
+                        case 3:
+                            TuesdayLabel.setForeground(Color.green);
+                            dayofweek = "Tuesday";
+                            break;
+                        case 4:
+                            WednesdayLabel.setForeground(Color.green);
+                            dayofweek = "Wednesday";
+                            break;
+                        case 5:
+                            ThursdayLabel.setForeground(Color.green);
+                            dayofweek = "Thursday";
+                            break;
+                        case 6:
+                            FridayLabel.setForeground(Color.green);
+                            dayofweek = "Friday";
+                            break;
+                        case 7:
+                            SaturdayLabel.setForeground(Color.green);
+                            dayofweek = "Saturday";
+                            break;
+                    }
+                    return dayofweek;
+    }
+   
     private void DismissButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DismissButtonActionPerformed
         play.Stop();
     }//GEN-LAST:event_DismissButtonActionPerformed
-    
+    private void checkAlarms(String time, String dayofweek){
+        for(int t=0; t< Alarms.size(); t++){
+            if(time.compareTo(Alarms.get(t).getTime())== 0){
+                if(Alarms.get(t).getEnabled()){
+                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                            if(currentAlarm != t){
+                                play.Stop();
+                                String Os = System.getProperty("os.name").toLowerCase();
+                                if (Os.equals("mac os x"))
+                                {
+                                MasterVolume mv = new MasterVolume();
+                                mv.setMasterVolume(5f);
+                                }
+                                else if (Os.contains("windows")){
+
+                                    try {
+                                        try {
+                                            WindowsSound.powershell();
+                                        } catch (InterruptedException ex) {
+                                            Logger.getLogger(Clock.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    } catch (IOException ex) {
+
+                                    }
+                                }
+                                play.Play("nothingatall.mp3");
+                                SnoozeAlarm = Alarms.get(t).getAlarm();
+                            }
+                            if(!Alarms.get(t).getRepeat()){
+                              Alarms.get(t).setenabled(false);
+                            }
+                            else{
+                                currentAlarm = t;
+                            } 
+                        }
+                     }
+                }
+            }
+        }
+    }
+    //Duplicate of checkalarms, but for test purposes only
+    public void checkAlarm(String time, String dayofweek){
+        for(int t=0; t< Alarms.size(); t++){
+            if(time.compareTo(Alarms.get(t).getTime())== 0){
+                if(Alarms.get(t).getEnabled()){
+                    for(int d=0; d< Alarms.get(t).getDays().size(); d++){
+                        if(dayofweek.compareTo(Alarms.get(t).getDays().get(d)) == 0){
+                            if(currentAlarm != t){
+                                Alarmsound = true;
+                                /*play.Stop();
+                                play.Play("nothingatall.mp3");
+                                SnoozeAlarm = Alarms.get(t).getAlarm();*/
+                            }
+                            if(!Alarms.get(t).getRepeat()){
+                              Alarms.get(t).setenabled(false);
+                            }
+                            else{
+                                currentAlarm = t;
+                            } 
+                        }
+                        else{
+                         Alarmsound = false;
+                        }
+                     }
+                    if(Alarms.get(t).getDays().isEmpty()){
+                        Alarmsound = false;
+                    }
+                }
+                else{
+                    Alarmsound = false;
+                }
+            }
+            else{
+                Alarmsound = false;
+            }
+        }
+    }
+    private String orderAlarms(String time, String day){
+      /*
+       * if dayofweek is equal to alarm day put in separate array to be sorted by time for
+       * notifications.
+       */
+      if(!Alarms.isEmpty()){
+          ArrayList<Alarm> ordered = new ArrayList();
+          ArrayList<String> Day = new ArrayList();
+          Day.add(day);
+          Alarm current = new Alarm("current time",Day,time,false,0,"none");
+          
+          for(int a=0; a<Alarms.size();a++){
+              for(int d=0; d<Alarms.get(a).getDays().size(); d++){
+                 if(day.compareToIgnoreCase(Alarms.get(a).getDays().get(d))==0){
+                     ordered.add(Alarms.get(a));
+                 } 
+              }
+          }
+          if(!ordered.isEmpty()){
+                ordered.add(current);
+               Collections.sort(ordered, new TimeStringComparator());
+               int index=0;
+               for(int t =0; t<ordered.size(); t++){
+                   //System.out.println(ordered.get(t).getTime());
+                   //if the time for the alarm has passed then go to the next alarm in the list.
+                   if(ordered.get(t).getTime().compareTo(time)==0){
+                       index = t+1;
+                   }
+               }
+               if(index > ordered.size()-1){
+                   return "No more Alarms Today!";
+               }
+               else{
+                 return "Next Alarm - \nName: "+ ordered.get(index).getAlarmName() + " \nTime: "+ ordered.get(index).getTime() +
+                         "\nNote: "+ ordered.get(index).getNote();
+               }
+          }
+          else{
+              return "No Alarms for today!";
+          }
+      }
+      else{
+          return "No Alarms have been created!";
+      }
+          
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -449,7 +712,7 @@ public class Clock extends javax.swing.JFrame {
     private javax.swing.JMenu FileMenu;
     private javax.swing.JLabel FridayLabel;
     private javax.swing.JLabel MondayLabel;
-    private javax.swing.JLabel NextEventContentLabel;
+    private javax.swing.JTextArea NextEventContentArea;
     private javax.swing.JLabel NextEventLabel;
     private javax.swing.JMenu RouteMenu;
     private javax.swing.JLabel SaturdayLabel;
@@ -465,6 +728,7 @@ public class Clock extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem newAlarmMenuItem;
     private javax.swing.JMenuItem setRouteMenuItem;
     private javax.swing.JMenuItem viewAlarmMenuItem;
@@ -505,7 +769,6 @@ private class AddAlarmToneListener implements ActionListener{
                 public void componentHidden(ComponentEvent e) 
                 {
                     ClassList = (ArrayList<StudentClass>) classSchedule.getClassList().clone();
-                    
                     classSchedule.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
@@ -596,8 +859,8 @@ private class AddAlarmToneListener implements ActionListener{
                     Alarm newAlarm = a.getAlarm();
                     if(newAlarm.getAlarmName() != null){
                         Alarms.add(newAlarm);
-                        System.out.println(newAlarm.getDays().toString());
                     }
+                    //orderAlarms();
                     a.dispose();
                 }
                 public void componentShown(ComponentEvent e) {
@@ -690,7 +953,7 @@ private class AddAlarmToneListener implements ActionListener{
                 newtime = timespots[0] + ":" + String.format("%02d",newmins) + " "+ strmins[1];
             }
             
-            Alarms.add(new Alarm(SnoozeAlarm.getAlarmName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone()));
+            Alarms.add(new Alarm(SnoozeAlarm.getAlarmName(),SnoozeAlarm.getDays(),newtime,SnoozeAlarm.getRepeat(),SnoozeAlarm.getTone(), SnoozeAlarm.getNote()));
         }
     }
 }
