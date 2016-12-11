@@ -115,7 +115,7 @@ public class ClockTest {
         String Alarmtime =String.format("%02d",(currenthour()+1)) + ":" + String.format("%02d",min) + " " + night_day;
         ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add("Tuesday");
-        Alarm testAlarm = new Alarm("test",daysofalarm,Alarmtime,false,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,Alarmtime,false,0,"none");
         C1.Alarms.add(testAlarm);
         C1.checkAlarm(getcurrenttime(), getcurrentday());
         System.out.println("testcheckAlarm_wrongtime: ");
@@ -127,7 +127,7 @@ public class ClockTest {
     public void testcheckAlarm_enabled(){
          ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add("Tuesday");
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,0,"none");
         testAlarm.setenabled(false);
         C1.Alarms.add(testAlarm);
         C1.checkAlarm(getcurrenttime(), getcurrentday());
@@ -139,7 +139,7 @@ public class ClockTest {
      @Test
     public void testcheckAlarm_noday(){
         ArrayList<String>daysofalarm = new ArrayList();
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,"nothingatall.mp3", "none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,0, "none");
         C1.Alarms.add(testAlarm);
         C1.checkAlarm(getcurrenttime(), getcurrentday());
         System.out.println("testcheckAlarm_noday: ");
@@ -155,7 +155,7 @@ public class ClockTest {
          }
         ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add(day);
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,0,"none");
         C1.Alarms.add(testAlarm);
         C1.checkAlarm(getcurrenttime(), getcurrentday());
         System.out.println("testcheckAlarm_daynotmatch: ");
@@ -167,7 +167,7 @@ public class ClockTest {
     public void testcheckAlarm_soundalarm(){
         ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add(getcurrentday());
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,0,"none");
         C1.Alarms.add(testAlarm);
         C1.checkAlarm(getcurrenttime(), getcurrentday());
         System.out.println("testcheckAlarm_soundalarm: ");
@@ -182,7 +182,7 @@ public class ClockTest {
     public void testcheckAlarm_disableaftersoundifnotrepeat(){
         ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add(getcurrentday());
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),false,0,"none");
         C1.Alarms.add(testAlarm);
         assertEquals(true,testAlarm.getEnabled());
         C1.checkAlarm(getcurrenttime(), getcurrentday());
@@ -197,7 +197,7 @@ public class ClockTest {
     public void testcheckAlarm_ifrepeatalarmnotchange(){
         ArrayList<String>daysofalarm = new ArrayList();
         daysofalarm.add(getcurrentday());
-        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),true,"nothingatall.mp3","none");
+        Alarm testAlarm = new Alarm("test",daysofalarm,getcurrenttime(),true,0,"none");
         C1.Alarms.add(testAlarm);
         assertEquals(true,testAlarm.getEnabled());
         C1.checkAlarm(getcurrenttime(), getcurrentday());

@@ -19,13 +19,15 @@ public final class MusicGui extends javax.swing.JFrame {
     /**
      * Creates new form MusicGui
      */
-    public static ArrayList<String> tones = new ArrayList();
+    public static ArrayList<String> tones = new ArrayList(); //pathname list
+    public static ArrayList<String> tone_name = new ArrayList(); //filename list
     MP3Player Player = new MP3Player();
     PlayList pl = new PlayList();
     public MusicGui() {
         initComponents();        
         pl.readList();
         pl.default_tone();
+        pl.writeList();
         MusicList.setListData(ConvertTones());
     }
 
@@ -154,8 +156,9 @@ public final class MusicGui extends javax.swing.JFrame {
 
     private void PlayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PlayButtonActionPerformed
        if(!MusicList.isSelectionEmpty()){
-           String musicpath = MusicList.getSelectedValue().toString();
-           if(musicpath != null || !musicpath.isEmpty()){
+           int tone_path = MusicList.getAnchorSelectionIndex();
+           String musicpath = tones.get(tone_path);
+           if(musicpath != null | !musicpath.isEmpty()){
                 Player.PlayResume(musicpath);
             }
        }
@@ -173,6 +176,7 @@ public final class MusicGui extends javax.swing.JFrame {
         int [] deleted = MusicList.getSelectedIndices();
         for(int i =0; i< deleted.length; i++){
             tones.remove(deleted[i]);
+            tone_name.remove(deleted[i]);
             pl.writeList();
         }
         MusicList.setListData(ConvertTones());
@@ -196,20 +200,21 @@ public final class MusicGui extends javax.swing.JFrame {
         }
         else{
             tones.add(chosenFile.getPath());
+            tone_name.add(chosenFile.getName());
             pl.writeList();
         MusicList.setListData(ConvertTones());
         }
         
         
     }//GEN-LAST:event_UploadButtonActionPerformed
-    public void AddTones(){
-        tones.add("nothingatall.mp3");
-        pl.writeList();
-    }
+//    public void AddTones(){
+//        //tones.add("nothingatall.mp3");
+//        pl.writeList();
+//    }
     private String [] ConvertTones(){
-        String [] tonescontainer = new String [tones.size()];
-        for(int t =0; t<tones.size(); t++){
-            tonescontainer[t]= tones.get(t);
+        String [] tonescontainer = new String [tone_name.size()];
+        for(int t =0; t<tone_name.size(); t++){
+            tonescontainer[t]= tone_name.get(t);
         }
         return tonescontainer;
     }

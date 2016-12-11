@@ -138,7 +138,7 @@ public class MP3Player
          if (pauseLocation ==0 ) 
          {
             Play(path);
-            MP3PlayerGUI.DisplayName.setText("When you say nothing at all");
+            //MP3PlayerGUI.DisplayName.setText("When you say nothing at all");
          }
          else Resume();
          
