@@ -1,9 +1,13 @@
 package smartalarm;
 
+import Mp3Player.MusicGui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JToggleButton;
 
@@ -12,15 +16,17 @@ import javax.swing.JToggleButton;
  * and open the template in the editor.
  */
 
+
 public class Alarm extends javax.swing.JFrame {
 
     //Attributes for Alarm class
     private String AlarmName;
     private boolean Repeat;
     private ArrayList<String> Days;
-    private String Tone;
+    private int Tone;
     private String time;
     private boolean enabled;
+//    public int alarm_tone;
     
     public Alarm() {
         initComponents();
@@ -31,10 +37,11 @@ public class Alarm extends javax.swing.JFrame {
         ThursdayToggleButton.addActionListener(new ColorchangeListener(ThursdayToggleButton,"Thursday"));
         FridayToggleButton.addActionListener(new ColorchangeListener(FridayToggleButton,"Friday"));
         SaturdayToggleButton.addActionListener(new ColorchangeListener(SaturdayToggleButton,"Saturday"));
+        AlarmToneBox.setModel(new DefaultComboBoxModel(MusicGui.tone_name.toArray()));
         Days = new ArrayList();
     }
     
-    public Alarm(String name, ArrayList<String>Day, String time, boolean R, String Tone){
+    public Alarm(String name, ArrayList<String>Day, String time, boolean R, int Tone){
         this.AlarmName = name;
         Days = new ArrayList(Day);
         this.time = time;
@@ -144,6 +151,11 @@ public class Alarm extends javax.swing.JFrame {
         AlarmToneBox.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         AlarmToneBox.setMaximumRowCount(30);
         AlarmToneBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "nothingatall.mp3" }));
+        AlarmToneBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AlarmToneBoxActionPerformed(evt);
+            }
+        });
 
         AlarmToneLabel.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         AlarmToneLabel.setForeground(new java.awt.Color(0, 0, 153));
@@ -270,17 +282,26 @@ public class Alarm extends javax.swing.JFrame {
             if(AlarmName.isEmpty() || AlarmName == null) AlarmName = "Alarm";
             Repeat = RepeatCheckBox.isSelected();
             enabled = true;
+            String alarm_tone_name="";
             if(AlarmToneBox.getSelectedItem() != null){
-                Tone = AlarmToneBox.getSelectedItem().toString();
+                alarm_tone_name = AlarmToneBox.getSelectedItem().toString();
+                Tone = AlarmToneBox.getSelectedIndex();
             }
             else{
-                Tone = "DefaultTone";
+                alarm_tone_name = "DefaultTone";
             }
-            if(Tone.isEmpty() || Tone == null) Tone = "DefaultTone";
+            if(alarm_tone_name.isEmpty() || alarm_tone_name == null) alarm_tone_name = "DefaultTone";
             time = String.format("%02d",Integer.parseInt(HourBox.getSelectedItem().toString())) + ":" + String.format("%02d",Integer.parseInt(MinBox.getSelectedItem().toString())) + " " + AM_PMBox.getSelectedItem().toString();
             setVisible(false);
         }
     }//GEN-LAST:event_SaveButtonActionPerformed
+
+    private void AlarmToneBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AlarmToneBoxActionPerformed
+//        // TODO add your handling code here:
+//        JComboBox tone_selection = new JComboBox<String>((ComboBoxModel<String>) MusicGui.tone_name);
+//        alarm_tone = tone_selection.getSelectedIndex();
+//        
+    }//GEN-LAST:event_AlarmToneBoxActionPerformed
 
     public void defaultvalues(){
         NameTextField.setText("");
@@ -344,7 +365,7 @@ public class Alarm extends javax.swing.JFrame {
     public void setenabled(boolean value){
         this.enabled = value;
     }
-    public String getTone(){
+    public int getTone(){
         return Tone;
     }
     public boolean getRepeat(){

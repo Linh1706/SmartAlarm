@@ -19,8 +19,8 @@ public final class MusicGui extends javax.swing.JFrame {
     /**
      * Creates new form MusicGui
      */
-    public static ArrayList<String> tones = new ArrayList();
-    public static ArrayList<String> tone_name = new ArrayList();
+    public static ArrayList<String> tones = new ArrayList(); //pathname list
+    public static ArrayList<String> tone_name = new ArrayList(); //filename list
     MP3Player Player = new MP3Player();
     PlayList pl = new PlayList();
     public MusicGui() {

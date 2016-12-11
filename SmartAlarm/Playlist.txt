@@ -1,2 +1,3 @@
+/Users/linhnguyen/Documents/Projects/SmartAlarm/loving-you.mp3
 nothingatall.mp3
-C:\Users\Linh1\Documents\SmartAlarm\good-morning.mp3
+/Users/linhnguyen/Documents/Projects/SmartAlarm/good-morning.mp3
