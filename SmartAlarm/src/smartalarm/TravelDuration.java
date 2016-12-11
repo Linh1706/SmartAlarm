@@ -27,6 +27,8 @@ public class TravelDuration implements Runnable {
     String destination;
     String StartLocation;
     static int time=0;
+    connector dbhandler = new connector("root","","db_alarm");
+    
     public TravelDuration (String StartLocation){
         this.StartLocation=StartLocation;
     }
@@ -106,6 +108,13 @@ public class TravelDuration implements Runnable {
             //System.out.println(time);
             bw.write(String.valueOf(time));
             bw.close();
+            
+            trafficdb traffic = new trafficdb (2,String.valueOf(time));
+            dbhandler.insert(traffic);
+            
+            location loc = new location (1, origin, destination);
+            dbhandler.insert(loc);
+            
         } catch (Exception ex) {
             Logger.getLogger(TravelDuration.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import Mp3Player.MusicGui;
+import smartalarm.connector;
+import smartalarm.tone;
 
 /**
  *
@@ -24,6 +26,7 @@ import Mp3Player.MusicGui;
  */
 public class PlayList {
     String playlist = "Playlist.txt";
+    connector dbhandler = new connector("root","","db_alarm");
     
     public void writeList(){
 //        Path path = Paths.get(playlist);
@@ -34,6 +37,9 @@ public class PlayList {
                 for (int i=0;i<MusicGui.tones.size();i++)
                 {
                     bw.write(MusicGui.tones.get(i).toString()+"\n");
+                    
+                    tone t = new tone (5,MusicGui.tones.get(i).toString(), MusicGui.tones.get(i).toString());
+                    dbhandler.insert(t);
                 }
                 bw.close();
             } catch (IOException ex) {

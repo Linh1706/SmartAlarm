@@ -43,6 +43,7 @@ public class Weather implements Runnable{
      File weatherdata = new File("WeatherData.txt");
      private static String weatherstring= "";
      String [] weatherlocations;
+     connector dbhandler = new connector("root","","db_alarm");
      
      public Weather(String StartLocation){
          weatherlocations = new String[]{StartLocation,"Troy,AL"};
@@ -54,6 +55,8 @@ public class Weather implements Runnable{
                 writer.write(weatherinfo+ System.getProperty("line.separator"));
                 writer.flush();
                 writer.close();
+                weatherdb wdb = new weatherdb(1, weatherinfo); 
+                dbhandler.insert(wdb);
                 
         } catch (IOException ex) {
             Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
