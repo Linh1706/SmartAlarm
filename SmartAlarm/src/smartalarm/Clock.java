@@ -182,7 +182,7 @@ public class Clock extends javax.swing.JFrame {
                                 //add new alarms but check to see if alarms already exist
                                 ArrayList<String>Day = new ArrayList();
                                 Day.add(classSchedule.getDayString(ClassList.get(c).getday()));
-                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,"nothingatall.mp3",Note);
+                                Alarm newclassAlarm = new Alarm(ClassList.get(c).getname(),Day,newtimestr,true,0,Note);
                                 if(!classalarmalreadyexist(newclassAlarm)){
                                     Alarms.add(newclassAlarm);
                                 }
@@ -244,7 +244,7 @@ public class Clock extends javax.swing.JFrame {
                         for(int s =0; s< days.length; s++){
                             AlarmDays.add(days[s]);
                         }
-                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),alarminfo[3],alarminfo[6]);
+                        Alarm b = new Alarm(alarminfo[0],AlarmDays,alarminfo[1],Boolean.parseBoolean(alarminfo[4]),Integer.parseInt(alarminfo[3]),alarminfo[6]);
                         b.setenabled(Boolean.parseBoolean(alarminfo[5]));
                         Alarms.add(b);
 
@@ -571,7 +571,7 @@ public class Clock extends javax.swing.JFrame {
 
                                     }
                                 }
-                                play.Play("nothingatall.mp3");
+                                play.Play(MusicGui.tones.get(Alarms.get(t).getTone()));
                                 SnoozeAlarm = Alarms.get(t).getAlarm();
                             }
                             if(!Alarms.get(t).getRepeat()){
@@ -632,7 +632,7 @@ public class Clock extends javax.swing.JFrame {
           ArrayList<Alarm> ordered = new ArrayList();
           ArrayList<String> Day = new ArrayList();
           Day.add(day);
-          Alarm current = new Alarm("current time",Day,time,false,"none","none");
+          Alarm current = new Alarm("current time",Day,time,false,0,"none");
           
           for(int a=0; a<Alarms.size();a++){
               for(int d=0; d<Alarms.get(a).getDays().size(); d++){
