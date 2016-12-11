@@ -110,12 +110,23 @@ public class Clock extends javax.swing.JFrame {
                 while(true){
                     NextEventContentArea.setText(orderAlarms(time,dayofweek));
                     if(!ClassList.isEmpty() && !StartLocation.isEmpty()){
-                        System.out.println("Here");
                         /*
                          * Calculate the new time.
                          * getready(min) + weather(min) + traffic(seconds). Add to class time and compute new alarm time.
                          * Convert all to milliseconds and then divde back out. 
                          */
+                        //Read the traffic file
+                        int trafficseconds = 0;
+                        try (BufferedReader br = new BufferedReader(new FileReader(new File("TravelDuration.txt")))) {
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    trafficseconds = Integer.parseInt(line);
+                                }
+                        }catch (FileNotFoundException ex) {
+                            Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex){
+                           Logger.getLogger(Weather.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         //Read the weather file
                         ArrayList<String>weatherp = new ArrayList();
                         while(weatherp.size() != 4){
@@ -158,10 +169,10 @@ public class Clock extends javax.swing.JFrame {
                         
                         String newtimestr = "";
                         //add time to get ready, weather, and traffic here
-                        int extratime = (((TimetogetReady + weather)* 60)/*add traffic seconds here*/)*1000;
-                        System.out.println("extra: " + TimetogetReady + " " +weather);
+                        int extratime = (((TimetogetReady + weather)* 60)+ trafficseconds)*1000;
+                        //System.out.println("extra: " + TimetogetReady + " " +weather);
                         for(int c =0; c<ClassList.size(); c++){
-                                System.out.println("Class time: "+ ClassList.get(c).getstarttime());
+                                //System.out.println("Class time: "+ ClassList.get(c).getstarttime());
                                 String [] CLTimes = ClassList.get(c).getstarttime().split(":");
                                 int CLHour = Integer.parseInt(CLTimes[0])* 3600;
                                 int CLMin = Integer.parseInt(CLTimes[1]) * 60;
@@ -178,7 +189,7 @@ public class Clock extends javax.swing.JFrame {
                                 }
                                 
                                 newtimestr = String.format("%02d",hoursL) + ":" + String.format("%02d",minutesL) + " "+ AM_PM;
-                                System.out.println("new class time: " + newtimestr);
+                                //System.out.println("new class time: " + newtimestr);
                                 //add new alarms but check to see if alarms already exist
                                 ArrayList<String>Day = new ArrayList();
                                 Day.add(classSchedule.getDayString(ClassList.get(c).getday()));
@@ -832,7 +843,7 @@ private class AddAlarmToneListener implements ActionListener{
                         }
                         ScheduledThreadPoolExecutor TravelPool = new ScheduledThreadPoolExecutor(2);
      
-                        TravelPool.scheduleAtFixedRate(new TravelDuration(StartLocation), 0, 5, TimeUnit.SECONDS);
+                        TravelPool.scheduleAtFixedRate(new TravelDuration(StartLocation), 0, 1800, TimeUnit.SECONDS);
 
                     }
                     
