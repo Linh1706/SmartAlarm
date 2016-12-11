@@ -571,7 +571,7 @@ public class Clock extends javax.swing.JFrame {
 
                                     }
                                 }
-                                play.Play("nothingatall.mp3");
+                                play.Play(MusicGui.tones.get(Alarms.get(t).getTone()));
                                 SnoozeAlarm = Alarms.get(t).getAlarm();
                             }
                             if(!Alarms.get(t).getRepeat()){
